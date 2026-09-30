@@ -1,0 +1,2449 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0a1024">
+<title>张尧瑾 ❤ 杨瑾 · 二周年快乐</title>
+<meta name="description" content="写给杨瑾的二周年纪念 —— 张尧瑾">
+<meta name="robots" content="noindex, nofollow">
+<style>
+/* ============================================================================
+ * style.css —— 布景 / 角色 / 动画
+ * ==========================================================================*/
+:root {
+  --ink: #43413d;
+  --gold: #ffd166;
+  --pink: #ff9ebb;
+  --deep: #070b1a;
+  --cw: clamp(126px, 17vw, 250px);
+  --serif: "Songti SC", "Noto Serif SC", "STSong", SimSun, serif;
+  --kai: "Kaiti SC", "STKaiti", KaiTi, "楷体", var(--serif);
+}
+
+* { box-sizing: border-box; }
+html, body { height: 100%; margin: 0; }
+body {
+  font-family: "PingFang SC", "Microsoft YaHei", "Hiragino Sans GB", system-ui, sans-serif;
+  background: #060a18;
+  color: #fff;
+  overflow: hidden;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  user-select: none;
+}
+svg { display: block; }
+button { font-family: inherit; }
+
+#fx { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+#stage { position: fixed; inset: 0; z-index: 2; }
+
+/* ------------------------------------------------------------------ 场景 */
+.scene {
+  position: absolute; inset: 0;
+  opacity: 0; visibility: hidden;
+  transition: opacity .85s ease, visibility .85s;
+  overflow: hidden;
+}
+.scene.active { opacity: 1; visibility: visible; z-index: 2; }
+
+.bg { position: absolute; inset: 0; }
+
+/* 角色位 */
+.char {
+  position: absolute;
+  width: var(--cw);
+  bottom: 24vh;
+  z-index: 3;
+  filter: drop-shadow(0 18px 22px rgba(0, 0, 0, .32));
+  transition: left .7s cubic-bezier(.3, .9, .3, 1), right .7s cubic-bezier(.3, .9, .3, 1),
+              bottom .7s ease, transform .7s ease, opacity .6s;
+}
+.char svg { width: 100%; height: auto; animation: bob 4.8s ease-in-out infinite; }
+.char:nth-of-type(2) svg { animation-delay: -1.7s; }
+.char-l { left: 9vw; }
+.char-r { right: 9vw; }
+
+@keyframes bob {
+  0%, 100% { translate: 0 0; }
+  50% { translate: 0 -9px; }
+}
+
+/* SVG 内部的小动作（用独立属性，避免覆盖 transform 属性） */
+.char-svg .blink { transform-box: fill-box; transform-origin: center; animation: blink 5.6s infinite; }
+.char-svg .blink:nth-of-type(2) { animation-delay: .4s; }
+@keyframes blink {
+  0%, 93%, 100% { transform: scaleY(1); }
+  96% { transform: scaleY(.14); }
+}
+.char-svg .bow { transform-box: fill-box; transform-origin: center; animation: wiggle 3.4s ease-in-out infinite; }
+.char-svg .crest { transform-box: fill-box; transform-origin: 12% 88%; animation: wiggle 3.9s ease-in-out infinite; }
+.char-svg .feathers { transform-box: fill-box; transform-origin: 12% 6%; animation: sway 5.2s ease-in-out infinite; }
+@keyframes wiggle { 0%, 100% { rotate: -3deg; } 50% { rotate: 3.5deg; } }
+@keyframes sway { 0%, 100% { rotate: -2deg; } 50% { rotate: 2.4deg; } }
+
+/* 道具 */
+.prop, .critter { position: absolute; z-index: 2; }
+.prop-svg, .part-svg { width: 100%; height: auto; }
+[data-prop] { line-height: 0; }
+
+/* ============================================================ 0 · 封面 */
+.bg-night {
+  background:
+    radial-gradient(1100px 620px at 74% 12%, rgba(120, 150, 255, .22), transparent 62%),
+    radial-gradient(900px 520px at 18% 88%, rgba(255, 140, 190, .16), transparent 65%),
+    linear-gradient(180deg, #060a1f 0%, #0d1533 42%, #1b1f45 72%, #2b2148 100%);
+}
+.moon {
+  position: absolute; top: 9vh; right: 13vw;
+  width: clamp(70px, 8vw, 132px); aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 36% 32%, #fffdf2, #ffeec4 58%, #f2d79a);
+  box-shadow: 0 0 60px 18px rgba(255, 236, 190, .34), 0 0 160px 60px rgba(255, 214, 140, .16);
+  animation: moonFloat 9s ease-in-out infinite;
+}
+@keyframes moonFloat { 0%, 100% { translate: 0 0; } 50% { translate: 0 -14px; } }
+.hill {
+  position: absolute; left: -10%; right: -10%; border-radius: 50% 50% 0 0;
+}
+.hill-far { bottom: 16vh; height: 26vh; background: rgba(26, 32, 74, .85); filter: blur(1px); }
+.hill-near {
+  bottom: 0; height: 24vh; left: -20%; right: -20%;
+  background: linear-gradient(180deg, #131a3d, #0a0f28);
+}
+.entry-inner {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding-bottom: 6vh;
+  text-align: center;
+}
+.eyebrow {
+  font-size: clamp(11px, 1.15vw, 15px); letter-spacing: .5em; margin: 0 0 2.2vh;
+  color: rgba(255, 226, 170, .82); text-indent: .5em;
+}
+.entry-title {
+  font-family: var(--serif);
+  font-size: clamp(32px, 6.4vw, 84px);
+  margin: 0; letter-spacing: .1em; text-indent: .1em;
+  background: linear-gradient(180deg, #fffaf0, #ffe1a8 60%, #ffc9d8);
+  -webkit-background-clip: text; background-clip: text; color: transparent;
+  filter: drop-shadow(0 6px 26px rgba(255, 200, 120, .3));
+  animation: riseIn 1.4s ease both;
+}
+.amp { color: #ff5f8a; -webkit-text-fill-color: #ff5f8a; animation: beat 1.8s ease-in-out infinite; display: inline-block; }
+@keyframes beat { 0%, 100% { scale: 1; } 22% { scale: 1.22; } 46% { scale: 1; } }
+@keyframes riseIn { from { opacity: 0; translate: 0 22px; } to { opacity: 1; translate: 0 0; } }
+.entry-sub {
+  font-family: var(--serif);
+  font-size: clamp(14px, 1.7vw, 22px); letter-spacing: .34em; text-indent: .34em;
+  color: rgba(255, 255, 255, .8); margin: 2.6vh 0 0;
+  animation: riseIn 1.4s .3s ease both;
+}
+.couple { display: flex; align-items: flex-end; gap: clamp(18px, 7vw, 130px); }
+.couple-entry { margin-top: 4.5vh; animation: riseIn 1.5s .5s ease both; }
+.couple-entry .char { position: relative; bottom: 0; width: calc(var(--cw) * .92); filter: none; }
+.couple-entry .char svg { animation: bob 4.8s ease-in-out infinite; }
+.entry-hint {
+  margin: 4.3vh 0 0; font-size: clamp(12px, 1.15vw, 15px); color: rgba(255, 255, 255, .62);
+  letter-spacing: .16em;
+  animation: hintPulse 2.6s ease-in-out infinite;
+}
+@keyframes hintPulse { 0%, 100% { opacity: .5; } 50% { opacity: 1; } }
+
+/* ============================================================ 1 · 高中 */
+.bg-day {
+  background:
+    radial-gradient(900px 520px at 82% 8%, rgba(255, 240, 190, .75), transparent 60%),
+    linear-gradient(180deg, #cfeaff 0%, #e2f4ff 46%, #f4fbff 68%, #dfeefb 100%);
+}
+.sun {
+  position: absolute; top: 7vh; left: 12vw; width: clamp(56px, 6vw, 96px); aspect-ratio: 1;
+  border-radius: 50%;
+  background: radial-gradient(circle at 40% 38%, #fffdf0, #ffe9a8 62%, #ffd166);
+  box-shadow: 0 0 70px 24px rgba(255, 223, 150, .55);
+}
+.bg-cloud {
+  position: absolute; height: 5vh; border-radius: 999px;
+  background: rgba(255, 255, 255, .9);
+  filter: blur(.4px);
+  animation: drift 42s linear infinite;
+}
+.bg-cloud::before, .bg-cloud::after {
+  content: ""; position: absolute; background: inherit; border-radius: 999px;
+}
+.bg-cloud::before { width: 60%; height: 170%; left: 12%; top: -80%; }
+.bg-cloud::after { width: 45%; height: 130%; right: 10%; top: -60%; }
+.c1 { width: 16vw; top: 12vh; left: -20vw; animation-duration: 56s; }
+.c2 { width: 22vw; top: 22vh; left: -30vw; animation-duration: 74s; animation-delay: -22s; opacity: .8; }
+.c3 { width: 13vw; top: 7vh; left: -16vw; animation-duration: 64s; animation-delay: -40s; }
+@keyframes drift { from { translate: -10vw 0; } to { translate: 118vw 0; } }
+
+.school {
+  position: absolute; left: 50%; translate: -50% 0; bottom: 30vh; width: min(74vw, 900px);
+  opacity: .96;
+}
+.school-roof {
+  height: 3.2vh; margin: 0 -3%; border-radius: 8px 8px 3px 3px;
+  background: linear-gradient(180deg, #6f8fb0, #53718f);
+}
+.school-wall {
+  position: relative; height: 22vh; border-radius: 4px;
+  background: linear-gradient(180deg, #f7f2e8, #e8e0d2);
+  box-shadow: inset 0 -14px 0 rgba(0, 0, 0, .05);
+  display: grid; grid-template-columns: repeat(6, 1fr); gap: 1.4vw 1.6vw;
+  padding: 2vh 2.6vw 1.4vh;
+}
+.school-wall i {
+  border-radius: 3px;
+  background: linear-gradient(180deg, #a8d4f0, #7fb6dd);
+  box-shadow: inset 0 0 0 2px rgba(255, 255, 255, .7);
+}
+.school-door {
+  position: absolute; left: 50%; translate: -50% 0; bottom: 0;
+  width: 12%; height: 40%;
+  border-radius: 6px 6px 0 0;
+  background: linear-gradient(180deg, #5f7f9e, #43607c);
+}
+.ground {
+  position: absolute; left: 0; right: 0; bottom: 0; height: 30vh;
+  background: linear-gradient(180deg, #9db8cf 0%, #86a3bd 12%, #7c99b4 100%);
+  border-top: 3px solid rgba(255, 255, 255, .5);
+}
+.ground::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 18%; height: 3px;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .55) 0 34px, transparent 34px 74px);
+}
+.scene-school .char { bottom: 20vh; }
+.scene-school .char-l { left: 11vw; }
+.scene-school .char-r { right: 11vw; }
+.prop-net { left: 32%; bottom: 24vh; width: min(36vw, 430px); z-index: 4; }
+.prop-shuttle { left: 47%; bottom: 46vh; width: clamp(34px, 3.6vw, 56px); z-index: 5; }
+.prop-lunch { left: 41%; bottom: 20vh; width: clamp(70px, 7vw, 110px); opacity: 0; transition: .6s; }
+.prop-note {
+  left: 50%; bottom: 52vh; width: clamp(60px, 6vw, 96px); opacity: 0;
+  transition: .7s cubic-bezier(.3, .9, .3, 1); z-index: 5;
+}
+.uniform-card {
+  position: absolute; left: 4vw; top: 6vh; width: clamp(190px, 20vw, 290px);
+  padding: 14px 16px 12px; border-radius: 18px; z-index: 6;
+  background: rgba(255, 255, 255, .93);
+  border: 2px solid rgba(120, 170, 210, .55);
+  box-shadow: 0 18px 40px rgba(40, 80, 120, .22);
+  color: #23405c; font-size: clamp(11px, 1.02vw, 14px); line-height: 1.7;
+  opacity: 0; translate: -18px 0; transition: .7s cubic-bezier(.3, .9, .3, 1);
+}
+.uniform-card p { margin: 8px 0 0; }
+.uniform-card b { color: #16386b; letter-spacing: .1em; }
+.uniform-art { border-radius: 12px; overflow: hidden; background: linear-gradient(180deg, #eaf6ff, #d5ecfa); }
+.scene-school[data-beat="1"] .uniform-card,
+.scene-school[data-beat="2"] .uniform-card,
+.scene-school[data-beat="3"] .uniform-card,
+.scene-school[data-beat="4"] .uniform-card { opacity: 1; translate: 0 0; }
+.scene-school[data-beat="2"] .prop-shuttle { animation: hit 1.6s ease-in-out infinite; }
+.scene-school[data-beat="3"] .prop-shuttle { opacity: 0; }
+@keyframes hit { 0%, 100% { translate: 0 0; rotate: -8deg; } 50% { translate: -10vw -5vh; rotate: 14deg; } }
+.scene-school[data-beat="3"] .prop-lunch { opacity: 1; bottom: 26vh; }
+.scene-school[data-beat="4"] .prop-note { opacity: 1; animation: noteFly 2.6s ease-in-out infinite; }
+@keyframes noteFly {
+  0%, 100% { translate: 0 0; rotate: -7deg; }
+  50% { translate: -6vw 3vh; rotate: 8deg; }
+}
+
+/* ========================================================== 2 · 欧美社团 */
+.bg-hall {
+  background:
+    radial-gradient(900px 560px at 50% 18%, rgba(255, 214, 150, .28), transparent 62%),
+    linear-gradient(180deg, #14162b 0%, #1d1b34 48%, #2a1f2f 78%, #17141f 100%);
+}
+.bg-hall::after {
+  content: ""; position: absolute; inset: 0;
+  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .025) 0 2px, transparent 2px 120px);
+}
+.prop-screen { left: 50%; translate: -50% 0; top: 11vh; width: min(58vw, 760px); z-index: 2; }
+.screen-copy {
+  position: absolute; left: 10%; right: 10%; top: 22%;
+  text-align: center; color: #ffe6b0; z-index: 3;
+  font-family: var(--serif); letter-spacing: .22em;
+}
+.screen-copy span { display: block; font-size: clamp(15px, 2.1vw, 30px); text-shadow: 0 0 20px rgba(255, 200, 120, .6); }
+.screen-copy em {
+  display: block; margin-top: .8em; font-style: normal; font-size: clamp(10px, 1.05vw, 15px);
+  color: rgba(255, 255, 255, .68); letter-spacing: .3em;
+}
+.club-tag {
+  position: absolute; top: 44vh; z-index: 5;
+  padding: 7px 15px; border-radius: 999px;
+  font-size: clamp(10px, 1vw, 13px); letter-spacing: .12em;
+  background: rgba(255, 209, 102, .16); border: 1px solid rgba(255, 209, 102, .5);
+  color: #ffe1a0; backdrop-filter: blur(4px);
+  opacity: 0; transition: .6s;
+}
+.tag-l { left: 10vw; } .tag-r { right: 10vw; }
+.scene-club[data-beat="1"] .club-tag,
+.scene-club[data-beat="2"] .club-tag { opacity: 1; }
+.prop-popcorn { left: 20vw; bottom: 46vh; width: clamp(52px, 5.4vw, 84px); }
+.prop-gift {
+  left: 50%; translate: -50% 0; bottom: 44vh; width: clamp(56px, 5.6vw, 88px);
+  opacity: 0; transition: .7s cubic-bezier(.3, .9, .3, 1);
+}
+.prop-note2 {
+  left: 50%; translate: -50% 0; bottom: 34vh; width: clamp(60px, 6vw, 96px);
+  opacity: 0; transition: .7s;
+}
+.scene-club[data-beat="1"] .prop-gift { opacity: 1; animation: giftFloat 2.8s ease-in-out infinite; }
+.scene-club[data-beat="2"] .prop-note2 { opacity: 1; animation: noteFly 3s ease-in-out infinite; }
+@keyframes giftFloat { 0%, 100% { translate: -50% 0; } 50% { translate: -50% -14px; } }
+.scene-club .char { bottom: 22vh; }
+.scene-club .char-l { left: 12vw; } .scene-club .char-r { right: 12vw; }
+
+/* ============================================================ 3 · 双城记 */
+.bg-map {
+  background:
+    radial-gradient(1200px 700px at 62% 30%, rgba(80, 140, 220, .22), transparent 66%),
+    linear-gradient(180deg, #070d20 0%, #0c1730 52%, #0a1024 100%);
+}
+.bg-map::after {
+  content: ""; position: absolute; inset: 0; opacity: .3;
+  background-image:
+    linear-gradient(rgba(140, 190, 255, .14) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(140, 190, 255, .14) 1px, transparent 1px);
+  background-size: 62px 62px, 62px 62px;
+}
+.route-svg { position: absolute; inset: 0; width: 100%; height: 100%; z-index: 2; overflow: visible; }.route-line, .route-glow { fill: none; stroke-linecap: round; }
+.route-line { stroke: #ffd166; stroke-width: 2.4; stroke-dasharray: 9 11; animation: dash 3.4s linear infinite; }
+.route-glow { stroke: rgba(255, 209, 102, .28); stroke-width: 12; }
+@keyframes dash { to { stroke-dashoffset: -40; } }
+.city {
+  position: absolute; z-index: 4; text-align: center;
+  color: #eaf3ff; font-size: clamp(11px, 1.1vw, 15px);
+}
+.city b { display: block; font-weight: 600; letter-spacing: .08em; }
+.city i { display: block; font-style: normal; font-size: .82em; color: rgba(180, 210, 255, .72); margin-top: .25em; }
+.city .pin { position: relative; display: block; width: clamp(20px, 2vw, 30px); margin: 0 auto 4px; }
+.city-bj { right: 19%; top: 10%; }
+.city-km { left: 16%; top: 39%; }
+.prop-train {
+  left: 70%; top: 17%; width: clamp(70px, 7vw, 112px); z-index: 5;
+  animation: ride 13s ease-in-out infinite;
+}
+@keyframes ride {
+  0% { left: 74%; top: 8%; rotate: 6deg; }
+  50% { left: 45%; top: 9%; rotate: 4deg; }
+  100% { left: 13%; top: 31%; rotate: 26deg; }
+}
+.scene-distance .critter-dog { right: 6%; top: 12%; width: clamp(62px, 6vw, 100px); z-index: 4; animation: bob 5s ease-in-out infinite; }
+.scene-distance .critter-cat { left: 4%; top: 40%; width: clamp(58px, 5.6vw, 92px); z-index: 4; animation: bob 5.6s ease-in-out infinite reverse; }
+.bubble {
+  position: absolute; z-index: 6; max-width: 22vw;
+  padding: 9px 15px; border-radius: 16px;
+  font-size: clamp(11px, 1.05vw, 14px); line-height: 1.5;
+  background: rgba(255, 255, 255, .95); color: #22374f;
+  box-shadow: 0 12px 26px rgba(0, 0, 0, .3);
+  opacity: 0; transition: .6s;
+}
+.bubble::after {
+  content: ""; position: absolute; bottom: -7px; width: 14px; height: 14px;
+  background: inherit; rotate: 45deg; border-radius: 3px;
+}
+.bubble-l { left: 24%; top: 58%; } .bubble-l::after { left: 22px; }
+.bubble-r { right: 22%; top: 46%; } .bubble-r::after { right: 22px; }
+.scene-distance[data-beat="3"] .bubble { opacity: 1; }
+.scene-distance[data-beat="4"] .bubble { opacity: 0; }
+.char-bj { left: 4vw; bottom: 9vh; width: calc(var(--cw) * .84); }
+.char-km { right: 4vw; bottom: 9vh; width: calc(var(--cw) * .84); }
+
+/* ======================================================= 4 · 蜘蛛侠 & MJ */
+.bg-city {
+  background:
+    radial-gradient(900px 620px at 50% 78%, rgba(200, 50, 60, .22), transparent 62%),
+    radial-gradient(700px 420px at 16% 8%, rgba(70, 110, 220, .3), transparent 66%),
+    linear-gradient(180deg, #05070f 0%, #0b1020 46%, #141a2e 74%, #1b1424 100%);
+}
+.skyline { position: absolute; left: 0; right: 0; bottom: 0; height: 46vh; z-index: 1; }
+.bldg {
+  position: absolute; bottom: 0; border-radius: 3px 3px 0 0;
+  background:
+    repeating-linear-gradient(180deg, rgba(255, 208, 130, .3) 0 2px, transparent 2px 30px),
+    repeating-linear-gradient(90deg, rgba(255, 208, 130, .26) 0 3px, transparent 3px 26px),
+    linear-gradient(180deg, #121a2c, #090d19);
+  background-blend-mode: screen, screen, normal;
+  box-shadow: 0 0 26px rgba(255, 190, 100, .08);
+}
+.prop-web { left: -4vw; top: -6vh; width: min(38vw, 420px); z-index: 3; opacity: .85; }
+.web-thread {
+  position: absolute; left: 50%; top: 0; width: 3px; height: 26vh; z-index: 2;
+  background: linear-gradient(180deg, rgba(255, 255, 255, .05), rgba(255, 255, 255, .72));
+  translate: -50% 0;
+}
+.spidey-tag {
+  position: absolute; left: 50%; translate: -50% 0; top: 7vh; z-index: 6;
+  font-family: var(--serif); letter-spacing: .34em; text-indent: .34em;
+  font-size: clamp(12px, 1.5vw, 20px);
+  color: #ff8a8a; text-shadow: 0 0 22px rgba(220, 60, 60, .6);
+}
+.scene-spidey .char-spidey {
+  left: 34%; bottom: 46vh; width: calc(var(--cw) * .9); z-index: 5;
+  transition: bottom .9s cubic-bezier(.3, .9, .3, 1), left .9s cubic-bezier(.3, .9, .3, 1);
+}
+.char-spidey svg { transform: rotate(180deg); animation: hangSway 5.4s ease-in-out infinite; }
+@keyframes hangSway {
+  0%, 100% { transform: rotate(177deg); }
+  50% { transform: rotate(183deg); }
+}
+.scene-spidey .char-mj {
+  left: 44%; bottom: 22vh; width: calc(var(--cw) * .94); z-index: 4;
+  transition: bottom .9s ease, left .9s ease;
+}
+.kiss-spark {
+  position: absolute; left: 42%; top: 44%; translate: -50% 0; z-index: 7;
+  font-size: clamp(26px, 3.4vw, 52px); color: #ff5f8a; text-shadow: 0 0 28px rgba(255, 90, 130, .85);
+  opacity: 0; transition: .5s;
+}
+.scene-spidey[data-beat="0"] .char-spidey { bottom: 66vh; }
+.scene-spidey[data-beat="1"] .char-spidey { bottom: 56vh; left: 42%; }
+.scene-spidey[data-beat="2"] .char-spidey { bottom: 49vh; left: 42%; }
+.scene-spidey[data-beat="2"] .char-mj { bottom: 28vh; left: 42%; }
+.scene-spidey[data-beat="2"] .kiss-spark { opacity: 1; animation: beat 1.4s ease-in-out infinite; left: 47%; top: 45%; }
+.scene-spidey[data-beat="3"] .char-spidey { bottom: 52vh; left: 34%; }
+.scene-spidey[data-beat="3"] .char-mj { bottom: 24vh; left: 44%; }
+.scene-spidey[data-beat="3"] .kiss-spark { opacity: .9; left: 38%; }
+
+/* ========================================================= 5 · 怪奇物语 */
+.bg-gym {
+  background:
+    radial-gradient(800px 500px at 50% 8%, rgba(180, 120, 255, .2), transparent 62%),
+    linear-gradient(180deg, #131024 0%, #1c1533 44%, #2a1c33 70%, #3a2230 100%);
+}
+.bg-gym::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 26vh;
+  background:
+    repeating-linear-gradient(90deg, rgba(120, 70, 40, .5) 0 46px, rgba(95, 55, 30, .5) 46px 92px),
+    linear-gradient(180deg, #6b4426, #4b2f1a);
+  border-top: 4px solid rgba(255, 220, 180, .18);
+}
+.string-lights { position: absolute; inset: 0 0 auto 0; height: 34vh; z-index: 2; }
+.bulb {
+  position: absolute; width: clamp(16px, 1.7vw, 26px); translate: -50% 0;
+  animation: glow 2.4s ease-in-out infinite; animation-delay: var(--d, 0s);
+}
+@keyframes glow { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+.stranger-tag {
+  position: absolute; left: 50%; translate: -50% 0; top: 5vh; z-index: 6;
+  font-family: "Courier New", monospace; font-weight: 700;
+  letter-spacing: .3em; font-size: clamp(12px, 1.5vw, 20px);
+  color: #ff5d3b; text-shadow: 0 0 22px rgba(255, 90, 60, .65);
+}
+.love-note {
+  position: absolute; left: 50%; translate: -50% 0; top: 20vh; z-index: 6;
+  padding: 10px 22px; rotate: -4deg;
+  font-family: "Courier New", monospace; font-weight: 700;
+  font-size: clamp(16px, 2vw, 28px); color: #2b1d17; letter-spacing: .16em;
+  background: #fdf6e3; border: 3px solid #d9c9a3; border-radius: 6px;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .4);
+  opacity: 0; transition: .6s; 
+}
+.scene-stranger[data-beat="1"] .love-note,
+.scene-stranger[data-beat="2"] .love-note,
+.scene-stranger[data-beat="3"] .love-note { opacity: 1; animation: signWave 2.2s ease-in-out infinite; }
+@keyframes signWave { 0%, 100% { rotate: -4deg; } 50% { rotate: 4deg; } }
+.prop-arcade { right: 3vw; top: 26vh; width: min(28vw, 400px); z-index: 3; opacity: .96; }
+.prop-walkie {
+  left: 31%; bottom: 40vh; width: clamp(44px, 4.4vw, 68px); z-index: 6;
+  opacity: 0; transition: .6s;
+}
+.prop-skate {
+  right: 26%; bottom: 36vh; width: clamp(80px, 8vw, 124px); z-index: 6;
+  opacity: 0; transition: .6s;
+}
+.scene-stranger[data-beat="2"] .prop-walkie { opacity: 1; animation: giftFloat 3s ease-in-out infinite; }
+.scene-stranger[data-beat="2"] .prop-skate { opacity: 1; animation: giftFloat 3.4s ease-in-out infinite; }
+.scene-stranger .char { bottom: 20vh; width: calc(var(--cw) * .92); }
+.scene-stranger .char-l { left: 13vw; } .scene-stranger .char-r { right: 16vw; }
+.scene-stranger[data-beat="3"] .char-l { left: 27vw; }
+.scene-stranger[data-beat="3"] .char-r { right: 27vw; }
+
+/* ============================================================ 6 · 承诺 */
+.bg-dusk {
+  background:
+    radial-gradient(900px 560px at 76% 16%, rgba(255, 180, 140, .3), transparent 62%),
+    radial-gradient(700px 460px at 20% 86%, rgba(120, 110, 220, .22), transparent 66%),
+    linear-gradient(180deg, #101a3a 0%, #23255a 38%, #4b3468 62%, #6d4059 82%, #2a1c3a 100%);
+}
+.moon-warm {
+  background: radial-gradient(circle at 38% 34%, #fff6e2, #ffd9a8 60%, #f2b57e);
+  box-shadow: 0 0 70px 24px rgba(255, 200, 160, .38), 0 0 170px 70px rgba(255, 170, 130, .16);
+}
+.prop-bench { left: 50%; translate: -50% 0; bottom: 14vh; width: min(34vw, 440px); z-index: 1; }
+.scene-promise .char { bottom: 20vh; width: calc(var(--cw) * .96); z-index: 3; }
+.scene-promise .char-l { left: 25vw; } .scene-promise .char-r { right: 25vw; }
+.egg-heart {
+  position: absolute; left: 50%; top: 27%; translate: -50% 0;
+  width: clamp(76px, 8.4vw, 126px); aspect-ratio: 1; z-index: 8;
+  border: 3px solid rgba(255, 233, 200, .6); border-radius: 50%; cursor: pointer;
+  background: radial-gradient(circle at 36% 30%, #ff9fbb, #e2412f 68%);
+  color: #fff; font-size: clamp(30px, 3.6vw, 54px); line-height: 1;
+  display: grid; place-items: center;
+  box-shadow: 0 0 0 0 rgba(255, 90, 120, .6), 0 16px 34px rgba(0, 0, 0, .34);
+  opacity: 0; scale: .6; pointer-events: none;
+  transition: opacity .7s, scale .7s cubic-bezier(.3, 1.5, .5, 1);
+  animation: heartPulse 1.8s ease-in-out infinite;
+}
+.egg-heart span { animation: beat 1.8s ease-in-out infinite; }
+@keyframes heartPulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(255, 90, 120, .55), 0 16px 34px rgba(0, 0, 0, .34); }
+  70% { box-shadow: 0 0 0 26px rgba(255, 90, 120, 0), 0 16px 34px rgba(0, 0, 0, .34); }
+}
+.scene-promise[data-beat="2"] .egg-heart { opacity: 1; scale: 1; pointer-events: auto; }
+.egg-hint {
+  position: absolute; left: 50%; translate: -50% 0; top: 41%; z-index: 8;
+  margin: 0; font-size: clamp(12px, 1.25vw, 16px); letter-spacing: .18em;
+  color: rgba(255, 226, 190, .95); opacity: 0; transition: .6s .3s;
+}
+.scene-promise[data-beat="2"] .egg-hint { opacity: 1; animation: hintPulse 2.4s ease-in-out infinite; }
+
+/* ======================================================= 7 · 婚礼彩蛋 */
+.bg-church {
+  background:
+    radial-gradient(760px 620px at 50% 12%, rgba(255, 236, 190, .42), transparent 62%),
+    linear-gradient(180deg, #f7e9d2 0%, #f3dcc0 42%, #e9c9a8 70%, #d9b391 100%);
+}
+.bg-church::before {
+  content: ""; position: absolute; left: 50%; translate: -50% 0; top: -10vh;
+  width: 60vw; height: 90vh;
+  background: linear-gradient(180deg, rgba(255, 250, 230, .8), transparent 72%);
+  clip-path: polygon(42% 0, 58% 0, 100% 100%, 0 100%);
+  filter: blur(6px); opacity: .7;
+}
+.bg-church::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 22vh;
+  background: linear-gradient(180deg, rgba(190, 150, 120, .35), rgba(140, 105, 80, .55));
+}
+.prop-arch { left: 50%; translate: -50% 0; bottom: 12vh; width: min(60vw, 780px); z-index: 2; }
+.wedding-title {
+  position: absolute; left: 50%; translate: -50% 0; top: 6vh; z-index: 6;
+  font-family: var(--serif); font-size: clamp(20px, 3.2vw, 44px);
+  letter-spacing: .16em; text-indent: .16em; color: #8a5a3c;
+  text-shadow: 0 2px 0 rgba(255, 255, 255, .7), 0 12px 30px rgba(150, 100, 70, .3);
+  opacity: 0; transition: .9s .3s;
+}
+.wedding-title span { color: #d8392a; }
+.scene-wedding[data-beat="1"] .wedding-title,
+.scene-wedding[data-beat="2"] .wedding-title,
+.scene-wedding[data-beat="3"] .wedding-title,
+.scene-wedding[data-beat="4"] .wedding-title { opacity: 1; }
+.scene-wedding .char { bottom: 18vh; }
+.scene-wedding .char-l { left: 28vw; }
+.scene-wedding .char-r { right: 28vw; }
+.scene-wedding[data-beat="2"] .char-l { left: 32vw; }
+.scene-wedding[data-beat="2"] .char-r { right: 32vw; }
+.scene-wedding[data-beat="3"] .char-l { left: 30vw; }
+.scene-wedding[data-beat="3"] .char-r { right: 30vw; }
+.scene-wedding[data-beat="4"] .char-l { left: 33vw; }
+.scene-wedding[data-beat="4"] .char-r { right: 33vw; }
+.scene-wedding .critter-cat { left: 14vw; top: auto; bottom: 12vh; width: clamp(56px, 5.6vw, 92px); z-index: 4; }
+.scene-wedding .critter-dog { right: 14vw; top: auto; bottom: 12vh; width: clamp(58px, 5.8vw, 96px); z-index: 4; }
+.prop-ring {
+  left: 50%; translate: -50% 0; bottom: 40vh; width: clamp(58px, 6vw, 96px); z-index: 6;
+  opacity: 0; transition: .7s cubic-bezier(.3, .9, .3, 1);
+}
+.scene-wedding[data-beat="3"] .prop-ring { opacity: 1; animation: giftFloat 2.6s ease-in-out infinite; }
+
+/* 最后一屏：信 */
+.final-card {
+  position: absolute; left: 50%; top: 50%; translate: -50% -50%;
+  width: min(90vw, 720px); max-height: 88vh; overflow-y: auto;
+  padding: clamp(22px, 3vw, 40px) clamp(20px, 3.4vw, 48px);
+  border-radius: 26px; z-index: 10;
+  background: linear-gradient(180deg, rgba(255, 252, 245, .98), rgba(255, 244, 232, .97));
+  border: 2px solid rgba(200, 160, 120, .5);
+  box-shadow: 0 30px 80px rgba(80, 45, 30, .38);
+  color: #4a352a;
+  opacity: 0; scale: .92; pointer-events: none;
+  transition: opacity .9s ease, scale .9s cubic-bezier(.3, 1.2, .4, 1);
+  text-align: left;
+}
+.final-card.show { opacity: 1; scale: 1; pointer-events: auto; }
+.final-card h3 {
+  font-family: var(--serif); text-align: center; margin: 0 0 .8em;
+  font-size: clamp(17px, 2vw, 26px); letter-spacing: .34em; text-indent: .34em; color: #a04a3a;
+}
+.letter p { font-family: var(--kai); font-size: clamp(13.5px, 1.28vw, 16.5px); line-height: 1.9; margin: 0 0 .7em; text-indent: 2em; }
+.letter p.salute, .letter p.sign { text-indent: 0; }
+.letter p.sign { text-align: right; color: #a04a3a; margin-top: 1.2em; }
+.days-line {
+  text-align: center; margin: 1em 0 .8em; color: #8a5a3c;
+  font-size: clamp(12px, 1.25vw, 16px); letter-spacing: .1em;
+}
+.days-line b { font-size: 1.7em; color: #d8392a; font-family: var(--serif); }
+.replay {
+  display: block; margin: 0 auto; padding: 11px 30px; cursor: pointer;
+  border-radius: 999px; border: 1.6px solid rgba(200, 120, 100, .7);
+  background: rgba(255, 255, 255, .7); color: #a04a3a;
+  font-size: clamp(12px, 1.15vw, 15px); letter-spacing: .16em;
+  transition: .3s;
+}
+.replay:hover { background: #d8392a; color: #fff; border-color: #d8392a; }
+
+/* ================================================================== 文案 */
+#caption {
+  position: fixed; left: 50%; bottom: clamp(18px, 4.4vh, 52px);
+  translate: -50% 16px; z-index: 5;
+  width: min(90vw, 900px); text-align: center;
+  opacity: 0; transition: opacity .55s ease, translate .55s ease;
+  pointer-events: none;
+}
+#caption.show { opacity: 1; translate: -50% 0; }
+#caption p {
+  margin: 0; display: inline-block;
+  padding: clamp(12px, 1.5vh, 18px) clamp(18px, 2.4vw, 34px);
+  border-radius: 18px;
+  background: rgba(10, 15, 32, .74);
+  border: 1px solid rgba(255, 209, 102, .34);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, .34);
+  backdrop-filter: blur(8px);
+  font-size: clamp(13px, 1.32vw, 18.5px); line-height: 1.85;
+  letter-spacing: .06em; color: #fdf6e8;
+}
+
+#nextHint {
+  position: fixed; right: clamp(14px, 2vw, 30px); bottom: clamp(14px, 3vh, 30px);
+  z-index: 5; font-size: clamp(11px, 1.05vw, 14px); letter-spacing: .12em;
+  color: rgba(255, 255, 255, .72);
+  transition: opacity .5s;
+  animation: hintPulse 2.6s ease-in-out infinite;
+  pointer-events: none;
+}
+#nextHint span { color: var(--gold); }
+#nextHint.hide { opacity: 0; }
+
+/* ================================================================== HUD */
+#hud {
+  position: fixed; inset: 0 0 auto 0; z-index: 9;
+  display: flex; align-items: center; justify-content: center;
+  padding: clamp(10px, 2vh, 22px) clamp(12px, 2vw, 26px);
+  pointer-events: none;
+}
+.dots { display: flex; gap: 9px; pointer-events: auto; }
+.dot {
+  border: 0; padding: 6px 0; background: none; cursor: pointer;
+  display: grid; place-items: center;
+}
+.dot span {
+  display: block; width: 9px; height: 9px; border-radius: 999px;
+  background: rgba(255, 255, 255, .3);
+  transition: .4s;
+}
+.dot.past span { background: rgba(255, 209, 102, .55); }
+.dot.on span { width: 26px; background: var(--gold); box-shadow: 0 0 14px rgba(255, 209, 102, .8); }
+.hud-right {
+  position: absolute; right: clamp(12px, 2vw, 26px); top: clamp(10px, 2vh, 22px);
+  display: flex; gap: 10px; pointer-events: auto;
+}
+.hud-btn {
+  width: clamp(34px, 3vw, 42px); aspect-ratio: 1; cursor: pointer;
+  border-radius: 50%; border: 1px solid rgba(255, 255, 255, .28);
+  background: rgba(12, 18, 38, .55); color: #ffe9bd;
+  font-size: clamp(14px, 1.3vw, 18px);
+  backdrop-filter: blur(6px);
+  transition: .3s;
+}
+.hud-btn:hover { background: rgba(255, 209, 102, .2); border-color: var(--gold); }
+.hud-btn.off { color: rgba(255, 255, 255, .4); }
+
+/* ============================================================== 自适应 */
+@media (max-width: 860px) {
+  :root { --cw: clamp(104px, 30vw, 168px); }
+  .char { bottom: 27vh; }
+  .char-l { left: 4vw; } .char-r { right: 4vw; }
+  .scene-school .char-l { left: 5vw; } .scene-school .char-r { right: 5vw; }
+  .uniform-card { left: 3vw; top: 8vh; width: min(52vw, 230px); }
+  .prop-net { left: 24%; width: 52vw; }
+  .screen-copy span { font-size: 14px; }
+  .club-tag { display: none; }
+  .city-bj { right: 6%; top: 12%; } .city-km { left: 6%; top: 68%; }
+  .bubble { max-width: 40vw; }
+  .bubble-l { left: 6vw; top: 34%; } .bubble-r { right: 6vw; top: 56%; }
+  .prop-arcade { right: 2vw; top: 30vh; width: 40vw; }
+  .scene-stranger .char-l { left: 6vw; } .scene-stranger .char-r { right: 8vw; }
+  .scene-stranger[data-beat="3"] .char-l { left: 12vw; }
+  .scene-stranger[data-beat="3"] .char-r { right: 12vw; }
+  .char-spidey { left: 26% !important; }
+  .char-mj { left: 32% !important; }
+  .scene-wedding .char-r { right: 12vw; }
+  .scene.scene-wedding .char-l { left: 9vw; }
+  .scene.scene-wedding .char-r { right: 9vw; }
+  .scene.scene-wedding[data-beat="2"] .char-l { left: 15vw; }
+  .scene.scene-wedding[data-beat="2"] .char-r { right: 15vw; }
+  .scene.scene-wedding[data-beat="3"] .char-l { left: 11vw; }
+  .scene.scene-wedding[data-beat="3"] .char-r { right: 11vw; }
+  .scene.scene-wedding[data-beat="4"] .char-l { left: 17vw; }
+  .scene.scene-wedding[data-beat="4"] .char-r { right: 17vw; }
+  .scene.scene-promise .char-l { left: 13vw; }
+  .scene.scene-promise .char-r { right: 13vw; }
+  .scene.scene-school .char,
+  .scene.scene-club .char,
+  .scene.scene-stranger .char,
+  .scene.scene-wedding .char,
+  .scene.scene-promise .char { bottom: 27vh; }
+  .scene.scene-distance .char-bj,
+  .scene.scene-distance .char-km { bottom: 15vh; }
+  .critter-cat { left: 4vw; width: 16vw; } .critter-dog { right: 4vw; width: 16vw; }
+  .final-card { width: 92vw; max-height: 76vh; }
+  #caption { bottom: 92px; }
+  #nextHint { display: none; }
+}
+@media (max-height: 560px) {
+  .char { bottom: 30vh; }
+  #caption { bottom: 12px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * { animation-duration: .001s !important; animation-iteration-count: 1 !important; }
+  .scene { transition: opacity .3s, visibility .3s; }
+}
+
+/* 截图模式：所有过渡/动画归零，方便用无头浏览器拍稳定画面 */
+html.static-shot * { animation: none !important; transition: none !important; }
+html.static-shot .scene { visibility: hidden; }
+html.static-shot .scene.active { visibility: visible; }
+
+</style>
+</head>
+<body>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<main id="stage">
+
+  <!-- 0 · 封面 -->
+  <section class="scene scene-entry" data-scene="0" data-key="entry" data-beat="0">
+    <div class="bg bg-night"></div>
+    <div class="moon"></div>
+    <div class="hill hill-far"></div>
+    <div class="hill hill-near"></div>
+    <div class="entry-inner">
+      <p class="eyebrow">2024.10.01 &nbsp;—&nbsp; 2026.10.01</p>
+      <h1 class="entry-title">张尧瑾 <span class="amp">❤</span> 杨瑾</h1>
+      <p class="entry-sub">二 &nbsp;周 &nbsp;年 &nbsp;快 &nbsp;乐</p>
+      <div class="couple couple-entry">
+        <div class="char" data-char="chicken" data-pose="wave" data-flip="1"></div>
+        <div class="char" data-char="sheep" data-pose="wave"></div>
+      </div>
+      <p class="entry-hint">点击屏幕开始 · 记得打开声音 ♪</p>
+    </div>
+  </section>
+
+  <!-- 1 · 高中 -->
+  <section class="scene scene-school" data-scene="1" data-key="school" data-beat="0">
+    <div class="bg bg-day"></div>
+    <div class="sun"></div>
+    <div class="bg-cloud c1"></div>
+    <div class="bg-cloud c2"></div>
+    <div class="bg-cloud c3"></div>
+    <div class="school">
+      <div class="school-roof"></div>
+      <div class="school-wall">
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+      </div>
+      <div class="school-door"></div>
+    </div>
+    <div class="ground"></div>
+    <div class="prop prop-net" data-prop="net"></div>
+    <div class="prop prop-shuttle" data-prop="shuttle"></div>
+    <div class="prop prop-lunch" data-prop="lunch"></div>
+    <div class="prop prop-note" data-prop="note"></div>
+    <div class="char char-l" data-char="chicken" data-outfit="uniform" data-pose="wave"
+         data-item="racket" data-flip="1"></div>
+    <div class="char char-r" data-char="sheep" data-outfit="uniform" data-pose="wave"
+         data-item="racket"></div>
+    <aside class="uniform-card">
+      <div class="uniform-art" data-prop="uniformDetail"></div>
+      <p><b>我们的校服</b><br>浅蓝色上衣 · 白色肩膀<br>右胸口一枚深蓝校徽</p>
+    </aside>
+  </section>
+
+  <!-- 2 · 欧美社团 -->
+  <section class="scene scene-club" data-scene="2" data-key="club" data-beat="0">
+    <div class="bg bg-hall"></div>
+    <div class="prop prop-screen" data-prop="screen">
+      <div class="screen-copy">
+        <span>MOVIE NIGHT</span>
+        <em>欧美社团 · 我们放的剧</em>
+      </div>
+    </div>
+    <div class="prop prop-popcorn" data-prop="popcorn"></div>
+    <div class="prop prop-gift" data-prop="gift"></div>
+    <div class="prop prop-note2" data-prop="note"></div>
+    <div class="club-tag tag-l">社长 · 张尧瑾</div>
+    <div class="club-tag tag-r">社长 · 杨瑾</div>
+    <div class="char char-l" data-char="chicken" data-pose="wave" data-item="popcorn" data-flip="1"></div>
+    <div class="char char-r" data-char="sheep" data-pose="wave" data-item="note"></div>
+  </section>
+
+  <!-- 3 · 双城记 -->
+  <section class="scene scene-distance" data-scene="3" data-key="distance" data-beat="0">
+    <div class="bg bg-map"></div>
+    <svg class="route-svg" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
+      <path class="route-glow" d="M 806 78 C 640 58 380 128 168 232"/>
+      <path class="route-line" d="M 806 78 C 640 58 380 128 168 232"/>
+    </svg>
+    <div class="prop prop-train" data-prop="train"></div>
+    <div class="city city-bj">
+      <span class="pin" data-prop="pin"></span>
+      <b>北京林业大学</b><i>我在北京</i>
+    </div>
+    <div class="city city-km">
+      <span class="pin" data-prop="pin"></span>
+      <b>云南师范大学</b><i>你在昆明</i>
+    </div>
+    <div class="critter critter-dog" data-prop="dog"></div>
+    <div class="critter critter-cat" data-prop="cat"></div>
+    <div class="char char-bj" data-char="chicken" data-pose="wave" data-item="phone" data-flip="1"></div>
+    <div class="char char-km" data-char="sheep" data-pose="wave" data-item="phone"></div>
+    <div class="bubble bubble-l">晚安，早点睡 🌙</div>
+    <div class="bubble bubble-r">今天也想你 ♡</div>
+  </section>
+
+  <!-- 4 · 蜘蛛侠 & MJ -->
+  <section class="scene scene-spidey" data-scene="4" data-key="spidey" data-beat="0">
+    <div class="bg bg-city"></div>
+    <div class="skyline" id="skyline"></div>
+    <div class="prop prop-web" data-prop="web"></div>
+    <div class="web-thread"></div>
+    <div class="spidey-tag">SPIDER-MAN &amp; MJ</div>
+    <div class="char char-spidey" data-char="chicken" data-outfit="spidey" data-pose="reach"></div>
+    <div class="char char-mj" data-char="sheep" data-outfit="mj" data-pose="up"></div>
+    <div class="kiss-spark">❤</div>
+  </section>
+
+  <!-- 5 · 怪奇物语 -->
+  <section class="scene scene-stranger" data-scene="5" data-key="stranger" data-beat="0">
+    <div class="bg bg-gym"></div>
+    <div class="string-lights" id="lights"></div>
+    <div class="prop prop-arcade" data-prop="arcade"></div>
+    <div class="prop prop-walkie" data-prop="walkie"></div>
+    <div class="prop prop-skate" data-prop="skate"></div>
+    <div class="stranger-tag">LUCAS &amp; MAX &nbsp;·&nbsp; 1985</div>
+    <div class="love-note">I&nbsp;♥&nbsp;YOU</div>
+    <div class="char char-l" data-char="chicken" data-outfit="striped" data-pose="hold" data-flip="1"></div>
+    <div class="char char-r" data-char="sheep" data-outfit="jacket" data-pose="hold"></div>
+  </section>
+
+  <!-- 6 · 承诺（彩蛋入口） -->
+  <section class="scene scene-promise" data-scene="6" data-key="promise" data-beat="0">
+    <div class="bg bg-dusk"></div>
+    <div class="moon moon-warm"></div>
+    <div class="prop prop-bench" data-prop="bench"></div>
+    <div class="char char-l" data-char="chicken" data-pose="hold" data-item="flower" data-flip="1"></div>
+    <div class="char char-r" data-char="sheep" data-pose="hold"></div>
+    <button class="egg-heart" id="eggHeart" type="button" aria-label="彩蛋">
+      <span>❤</span>
+    </button>
+    <p class="egg-hint">点一下这颗心 ♥</p>
+  </section>
+
+  <!-- 7 · 彩蛋：婚礼 -->
+  <section class="scene scene-wedding" data-scene="7" data-key="wedding" data-beat="0">
+    <div class="bg bg-church"></div>
+    <div class="prop prop-arch" data-prop="arch"></div>
+    <div class="critter critter-cat" data-prop="cat"></div>
+    <div class="critter critter-dog" data-prop="dog"></div>
+    <div class="wedding-title">张尧瑾 <span>❤</span> 杨瑾</div>
+    <div class="char char-l" data-char="chicken" data-outfit="tux" data-pose="hold" data-flip="1"></div>
+    <div class="char char-r" data-char="sheep" data-outfit="dress" data-pose="hold"></div>
+    <div class="prop prop-ring" data-prop="ringbox"></div>
+    <div class="final-card" id="finalCard">
+      <h3>写给你的信</h3>
+      <div class="letter" id="letterBody"></div>
+      <p class="days-line">我们在一起 <b id="daysNum">—</b> 天了</p>
+      <button class="replay" id="replay" type="button">再看一次 ↺</button>
+    </div>
+  </section>
+
+</main>
+
+<div id="hud">
+  <div class="dots" id="dots"></div>
+  <div class="hud-right">
+    <button class="hud-btn" id="btnMusic" type="button" title="音乐开关" aria-label="音乐开关">♪</button>
+    <button class="hud-btn" id="btnPrev" type="button" title="上一幕" aria-label="上一幕">←</button>
+  </div>
+</div>
+
+<div id="caption" aria-live="polite"><p id="capText"></p></div>
+<div id="nextHint">点击继续 <span>›</span></div>
+
+<script>
+/* ============================================================================
+ * data.js —— 全部文案与场景配置（想改词，改这里就够了）
+ * ==========================================================================*/
+(function (global) {
+  'use strict';
+
+  /* 在一起的日子：2024.10.01 —— 二周年是 2026.10.01 */
+  var START = '2024-10-01';
+  var TWO_YEARS = '2026-10-01';
+
+  var SCENES = [
+    {
+      key: 'entry',
+      fx: 'stars',
+      beats: [
+        { text: '' }
+      ]
+    },
+    {
+      key: 'school',
+      fx: 'leaves',
+      beats: [
+        { text: '故事从一间高中的教室开始 —— 那年秋天，我们穿着同一件校服。' },
+        { text: '浅蓝色，肩膀上落着一块白，右胸口别着深蓝色的校徽。两件一模一样的衣服，像两个还没来得及认识的我们。' },
+        { text: '课间的羽毛球场：你扣杀，我满地捡球；谁输了谁请喝奶茶。' },
+        { text: '食堂里拼一张桌子，你总把鸡腿夹到我碗里，说你不爱吃。' },
+        { text: '还有那些折成小方块、从第一排传到最后一排的纸条 ——「放学等我」。' }
+      ]
+    },
+    {
+      key: 'club',
+      fx: 'sparkle',
+      beats: [
+        { text: '后来，我们成了同一个欧美社团的社长。' },
+        { text: '你管片单和海报，我管音响和灯。《怪奇物语》，是我们放的第一部剧。' },
+        { text: '每次活动散场，我们都会偷偷往对方书包里塞一个小礼物。' }
+      ]
+    },
+    {
+      key: 'distance',
+      fx: 'hearts',
+      beats: [
+        { text: '毕业那年，你在云南师范大学，我在北京林业大学。' },
+        { text: '地图上两千六百公里：北京的风，昆明的花，中间隔着整整一条京广线。' },
+        { text: '你在昆明喂小猫，我在北京遛小狗 —— 你喜欢猫，我喜欢狗，我们各自替对方养着一份喜欢。' },
+        { text: '一句晚安，要翻过两千六百公里，才落进你耳朵里。' },
+        { text: '别人说异地恋很难。可我们把它过成了：每一次见面都像初恋，每一次分别都在倒计时。' }
+      ]
+    },
+    {
+      key: 'spidey',
+      fx: 'rain',
+      beats: [
+        { text: '你说，你喜欢蜘蛛侠和 MJ。' },
+        { text: '那今晚，换我做蜘蛛侠 —— 蛛丝一荡，从城市的这头到那头，只要一秒。' },
+        { text: '雨里倒挂着吻你的那一刻，整座城市都安静了。' },
+        { text: '「能力越大，责任越大。」而我的责任，是把你稳稳接住。' }
+      ]
+    },
+    {
+      key: 'stranger',
+      fx: 'snow',
+      beats: [
+        { text: '你说，《怪奇物语》里的 Lucas 和 Max，最像我们。' },
+        { text: '他很笨拙，却会在雪球舞会上鼓起勇气，说一句：I love you.' },
+        { text: 'Mad Max 在街机上留下 750000 的高分；而你在我的世界里，一直是最高分。' },
+        { text: '就算世界颠倒过来，我也会像 Lucas 那样，坐在你床边，一遍一遍念你的名字。' }
+      ]
+    },
+    {
+      key: 'promise',
+      fx: 'stars',
+      beats: [
+        { text: '两年，七百三十个日夜。' },
+        { text: '我们把鸡毛蒜皮过成了电影，把异地过成了浪漫。' },
+        { text: '其实……我还偷偷准备了一个小小的彩蛋。' }
+      ],
+      /* 这一幕只有点中间那颗心才会继续 */
+      only: '#eggHeart'
+    },
+    {
+      key: 'wedding',
+      fx: 'petals',
+      beats: [
+        { text: '现在，请两位主角入场 ——' },
+        { text: '张尧瑾先生 & 杨瑾小姐。' },
+        { text: '第二年，我依然想娶你。' },
+        { text: '交换戒指 —— 小猫做花童，小狗做伴郎，全场起立。' },
+        { text: '「我愿意。」' }
+      ]
+    }
+  ];
+
+  /* 婚礼最后一屏的信 */
+  var LETTER = {
+    title: '写给你的信',
+    lines: [
+      '杨瑾：',
+      '两周年快乐。',
+      '高中那会儿，我们穿着一样的浅蓝校服，在同一个球场上打球，在同一张桌子上吃饭，' +
+      '把想说的话折成纸条递来递去；后来一起做社长，一起把一部部剧看完。那时候我不敢想，' +
+      '那个总把鸡腿夹给我的女孩，会陪我走到今天。',
+      '现在你在昆明，我在北京。你在云南师范大学的操场上看晚霞，我在北京林业大学的林子里' +
+      '数落叶。我们隔着两千六百公里，却比很多每天见面的人更靠近 —— 因为你从没让我觉得，' +
+      '距离是一件需要害怕的事。',
+      '你喜欢小猫，我喜欢小狗。以后我们要养一只猫和一只狗，让它们替我们打一架，' +
+      '然后挤在同一个窝里睡着。',
+      '谢谢你做我的 MJ，也谢谢你做我的 Mad Max。',
+      '第三年、第五年、第五十年 —— 我都还想和你穿一次校服，打一场羽毛球，' +
+      '再递一次那张写着「放学等我」的纸条。',
+      '—— 张尧瑾'
+    ]
+  };
+
+  global.DATA = {
+    START: START,
+    TWO_YEARS: TWO_YEARS,
+    HER: '杨瑾',
+    HIM: '张尧瑾',
+    /* 想把背景音乐换成自己的歌：把 mp3 放在同目录，写上文件名即可，
+       例如 MUSIC: 'music.mp3'。留空就用页面自带的那段原创钢琴曲。 */
+    MUSIC: '',
+    SCENES: SCENES,
+    LETTER: LETTER
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+
+/* ============================================================================
+ * characters.js —— 角色 / 道具 / 场景零件的 SVG 生成器
+ * 纯字符串拼接，不依赖 DOM，方便在 node 里做校验、也方便打包成单文件。
+ *
+ *   鸡 = 张尧瑾（男生）   照着本人手绘的小鸡形象还原：一撮翘起来的冠羽、
+ *                          朝左的喙、方块眼睛，身后一大把羽毛。
+ *   羊 = 杨瑾（女生）     照着本人手绘的小羊形象还原：云朵一样的羊毛、
+ *                          头顶红色蝴蝶结、方块眼睛、粉腮红、微笑。
+ * ==========================================================================*/
+(function (global) {
+  'use strict';
+
+  var _uid = 0;
+  function nid(p) { return p + (++_uid); }
+  function R(v) { return Math.round(v * 100) / 100; }
+
+  /* ---------------------------------------------------------------- 基础形 */
+  /* 云朵 / 羊毛轮廓：绕一圈鼓包，每个鼓包一段外凸圆弧 */
+  function cloud(cx, cy, r, bumps, seed, wobble) {
+    seed = seed || 0;
+    wobble = wobble === undefined ? 0.075 : wobble;
+    var step = (Math.PI * 2) / bumps, pts = [], i;
+    for (i = 0; i < bumps; i++) {
+      var a = -Math.PI / 2 + i * step;
+      var rr = r * (1 + wobble * Math.sin(i * 2.4 + seed));
+      pts.push([cx + rr * Math.cos(a), cy + rr * Math.sin(a)]);
+    }
+    var d = 'M ' + R(pts[0][0]) + ' ' + R(pts[0][1]);
+    for (i = 0; i < bumps; i++) {
+      var p = pts[i], q = pts[(i + 1) % bumps];
+      var br = R(Math.hypot(q[0] - p[0], q[1] - p[1]) * 0.56);
+      d += ' A ' + br + ' ' + br + ' 0 0 1 ' + R(q[0]) + ' ' + R(q[1]);
+    }
+    return d + ' Z';
+  }
+
+  var INK = '#43413d';          // 手绘线条的颜色
+  var INK_SOFT = '#6a6760';
+
+  /* 鸡的身体：一颗微微倾斜的蛋 */
+  var EGG = 'M 116 38 C 150 38 173 78 173 124 C 173 172 150 216 112 216 ' +
+            'C 74 216 55 172 57 126 C 59 80 84 38 116 38 Z';
+  /* 羊的身体：一大朵云 */
+  var FLEECE = cloud(120, 138, 71, 11, 0.4);
+
+  /* ------------------------------------------------------------------ 手 */
+  /* 手臂姿势：相对肩膀的 [控制点dx, dy, 手dx, dy]，左右手分别给 */
+  var POSE = {
+    down:  { l: [-17, 20, -11, 40], r: [17, 20, 11, 40] },
+    up:    { l: [-21, -12, -17, -36], r: [21, -12, 17, -36] },
+    cheer: { l: [-28, -26, -30, -58], r: [28, -26, 30, -58] },
+    wave:  { l: [-17, 20, -11, 40], r: [23, -10, 34, -42] },
+    reach: { l: [-34, 2, -60, 6], r: [34, 2, 60, 6] },
+    /* 牵手：内侧那只手朝对方伸过去，外侧自然垂着 */
+    hold:  { l: [-27, -8, -56, -26], r: [17, 20, 11, 40] },
+    hug:   { l: [-30, 14, -58, 24], r: [30, 14, 58, 24] },
+    front: { l: [-8, 24, -6, 46], r: [8, 24, 6, 46] },
+    shy:   { l: [-14, 24, -16, 48], r: [14, 24, 16, 48] }
+  };
+
+  function armPath(sx, sy, o) {
+    var cx = sx + o[0], cy = sy + o[1], hx = sx + o[2], hy = sy + o[3];
+    return {
+      d: 'M ' + sx + ' ' + sy + ' Q ' + R(cx) + ' ' + R(cy) + ' ' + R(hx) + ' ' + R(hy),
+      hx: hx, hy: hy
+    };
+  }
+
+  function arms(sxL, sxR, sy, poseName, opt) {
+    var p = POSE[poseName] || POSE.down;
+    var a = armPath(sxL, sy, p.l), b = armPath(sxR, sy, p.r);
+    var w = (opt && opt.width) || 8;
+    var g = '<g class="arms" fill="none" stroke="' + INK + '" stroke-width="' + w +
+            '" stroke-linecap="round">' +
+            '<path d="' + a.d + '"/><path d="' + b.d + '"/></g>' +
+            '<g class="hands" fill="#fffdf7" stroke="' + INK + '" stroke-width="' + (w - 4) + '">' +
+            '<circle cx="' + R(a.hx) + '" cy="' + R(a.hy) + '" r="' + (w * 0.85) + '"/>' +
+            '<circle cx="' + R(b.hx) + '" cy="' + R(b.hy) + '" r="' + (w * 0.85) + '"/></g>';
+    return { svg: g, l: [a.hx, a.hy], r: [b.hx, b.hy] };
+  }
+
+  /* --------------------------------------------------------------- 五官 */
+  /* 眼睛：方块眼（照着手绘稿）／开心眯眼／爱心眼／闭眼 */
+  function eyes(kind, x1, y1, x2, y2, s) {
+    s = s || 1;
+    var w = 13 * s, h = 18 * s;
+    if (kind === 'happy') {
+      return '<g class="blink"><path d="M ' + (x1 - w / 2) + ' ' + y1 + ' q ' + (w / 2) + ' ' + (-h * 0.9) +
+        ' ' + w + ' 0" fill="none" stroke="' + INK + '" stroke-width="' + 4.2 * s + '" stroke-linecap="round"/>' +
+        '<path d="M ' + (x2 - w / 2) + ' ' + y2 + ' q ' + (w / 2) + ' ' + (-h * 0.9) + ' ' + w + ' 0" fill="none" stroke="' +
+        INK + '" stroke-width="' + 4.2 * s + '" stroke-linecap="round"/></g>';
+    }
+    if (kind === 'love') {
+      return '<g class="blink">' + heart(x1, y1, 9 * s, '#e2412f') + heart(x2, y2, 9 * s, '#e2412f') + '</g>';
+    }
+    if (kind === 'closed') {
+      return '<g class="blink"><path d="M ' + (x1 - w / 2) + ' ' + y1 + ' q ' + (w / 2) + ' ' + (h * 0.55) +
+        ' ' + w + ' 0" fill="none" stroke="' + INK + '" stroke-width="' + 4 * s + '" stroke-linecap="round"/>' +
+        '<path d="M ' + (x2 - w / 2) + ' ' + y2 + ' q ' + (w / 2) + ' ' + (h * 0.55) + ' ' + w +
+        ' 0" fill="none" stroke="' + INK + '" stroke-width="' + 4 * s + '" stroke-linecap="round"/></g>';
+    }
+    return '<g class="blink">' +
+      rect(x1 - w / 2, y1 - h / 2, w, h, 5 * s, '#35322e') +
+      rect(x2 - w / 2, y2 - h / 2, w, h, 5 * s, '#35322e') +
+      '<rect x="' + R(x1 - w / 2 + 2) + '" y="' + R(y1 - h / 2 + 3) + '" width="' + R(w * 0.32) +
+      '" height="' + R(h * 0.3) + '" rx="2" fill="#fff" opacity=".85"/>' +
+      '<rect x="' + R(x2 - w / 2 + 2) + '" y="' + R(y2 - h / 2 + 3) + '" width="' + R(w * 0.32) +
+      '" height="' + R(h * 0.3) + '" rx="2" fill="#fff" opacity=".85"/></g>';
+  }
+
+  function mouth(kind, cx, cy, s) {
+    s = s || 1;
+    var st = 'fill="none" stroke="' + INK + '" stroke-width="' + 4 * s + '" stroke-linecap="round"';
+    if (kind === 'open') {
+      return '<path d="M ' + (cx - 11 * s) + ' ' + cy + ' q ' + 11 * s + ' ' + 20 * s + ' ' + 22 * s +
+        ' 0 z" fill="#c96a72" stroke="' + INK + '" stroke-width="' + 3 * s + '" stroke-linejoin="round"/>';
+    }
+    if (kind === 'oh') {
+      return '<ellipse cx="' + cx + '" cy="' + (cy + 5 * s) + '" rx="' + 7 * s + '" ry="' + 8 * s +
+        '" fill="#c96a72" stroke="' + INK + '" stroke-width="' + 3 * s + '"/>';
+    }
+    if (kind === 'kiss') {
+      return '<path d="M ' + (cx - 7 * s) + ' ' + cy + ' q ' + 7 * s + ' ' + 9 * s + ' ' + 14 * s +
+        ' 0" ' + st + '/>';
+    }
+    /* 默认：带小勾的微笑（手绘稿上那个表情） */
+    return '<path d="M ' + (cx - 12 * s) + ' ' + (cy - 1 * s) + ' q ' + 12 * s + ' ' + 15 * s + ' ' + 24 * s +
+      ' 0" ' + st + '/>' +
+      '<path d="M ' + (cx - 15 * s) + ' ' + (cy - 4 * s) + ' l ' + (-4 * s) + ' ' + (-5 * s) + '" ' + st + '/>' +
+      '<path d="M ' + (cx + 15 * s) + ' ' + (cy - 4 * s) + ' l ' + (4 * s) + ' ' + (-5 * s) + '" ' + st + '/>';
+  }
+
+  function blush(x1, y1, x2, y2, s) {
+    s = s || 1;
+    return '<g fill="#ffaec4" opacity=".85">' +
+      '<ellipse cx="' + x1 + '" cy="' + y1 + '" rx="' + 10 * s + '" ry="' + 6.6 * s + '"/>' +
+      '<ellipse cx="' + x2 + '" cy="' + y2 + '" rx="' + 10 * s + '" ry="' + 6.6 * s + '"/></g>';
+  }
+
+  function rect(x, y, w, h, rx, fill) {
+    return '<rect x="' + R(x) + '" y="' + R(y) + '" width="' + R(w) + '" height="' + R(h) +
+      '" rx="' + rx + '" fill="' + fill + '"/>';
+  }
+
+  function heart(cx, cy, s, fill, stroke) {
+    var d = 'M 0 6 C -9 -2 -12 -8 -8 -12 C -5 -15 -1 -13 0 -9 C 1 -13 5 -15 8 -12 ' +
+            'C 12 -8 9 -2 0 6 Z';
+    return '<g transform="translate(' + R(cx) + ' ' + R(cy) + ') scale(' + s / 10 + ')">' +
+      '<path d="' + d + '" fill="' + (fill || '#e2412f') + '"' +
+      (stroke ? ' stroke="' + stroke + '" stroke-width="1.6"' : '') + '/></g>';
+  }
+
+  /* 小道具（手持物），画在 -32..32 的坐标系里 */
+  var HELD = {
+    none: function () { return ''; },
+    racket: function () {
+      return '<path d="M 0 30 L 0 4" stroke="#6b4f37" stroke-width="6" stroke-linecap="round"/>' +
+        '<ellipse cx="0" cy="-14" rx="16" ry="19" fill="rgba(255,255,255,.6)" stroke="' + INK + '" stroke-width="3.4"/>' +
+        '<g stroke="#c3ced6" stroke-width="1.3">' +
+        '<path d="M -13 -20 H 13 M -14 -14 H 14 M -14 -8 H 14 M -11 -2 H 11"/>' +
+        '<path d="M -6 -31 V 4 M 0 -33 V 5 M 6 -31 V 4"/></g>';
+    },
+    shuttle: function () {
+      return '<circle cx="0" cy="15" r="7" fill="#fdf7e6" stroke="#cbbfa4" stroke-width="2"/>' +
+        '<path d="M -12 -15 L -6 10 H 6 L 12 -15 Z" fill="#fff" stroke="#b7c2ca" stroke-width="2" stroke-linejoin="round"/>' +
+        '<path d="M -9.5 -8 H 9.5 M -8 -1 H 8" stroke="#dde5ea" stroke-width="3"/>';
+    },
+    note: function () {
+      return '<g transform="rotate(-9)">' + rect(-19, -13, 38, 26, 3, '#fffdf3') +
+        '<g stroke="#cbbd9c" stroke-width="1.7" stroke-linecap="round">' +
+        '<path d="M -13 -6 H 13 M -13 0 H 13 M -13 6 H 3"/></g>' +
+        '<rect x="-19" y="-13" width="38" height="26" rx="3" fill="none" stroke="#e3d8bd" stroke-width="1.6"/></g>' +
+        heart(13, -12, 5.5, '#e2412f');
+    },
+    gift: function () {
+      return rect(-18, -4, 36, 26, 4, '#f4a6bd') +
+        '<rect x="-20" y="-12" width="40" height="9" rx="3" fill="#ef8fab"/>' +
+        '<path d="M 0 -12 V 22 M -18 -8 H 18" stroke="#fff5f8" stroke-width="3"/>' +
+        '<path d="M 0 -13 C -8 -22 -16 -16 -8 -11 Z M 0 -13 C 8 -22 16 -16 8 -11 Z" fill="#fff5f8"/>';
+    },
+    lunch: function () {
+      return rect(-22, -6, 44, 24, 5, '#ffd79b') +
+        '<rect x="-24" y="-13" width="48" height="9" rx="3.5" fill="#ffc670"/>' +
+        '<path d="M -9 -13 a 9 9 0 0 1 18 0" fill="none" stroke="#dfa254" stroke-width="2.4"/>' +
+        '<path d="M -22 2 H 22" stroke="#e7b273" stroke-width="2"/>';
+    },
+    popcorn: function () {
+      return '<path d="M -15 4 H 15 L 11 28 H -11 Z" fill="#fff" stroke="#e2685f" stroke-width="2.2" stroke-linejoin="round"/>' +
+        '<g fill="#fff" stroke="#e2685f" stroke-width="2.2">' +
+        '<circle cx="-8" cy="0" r="7"/><circle cx="0" cy="-5" r="8"/><circle cx="8" cy="0" r="7"/></g>';
+    },
+    cup: function () {
+      return '<path d="M -11 -14 H 11 L 8 22 H -8 Z" fill="#fff" stroke="#d9a86a" stroke-width="2.4" stroke-linejoin="round"/>' +
+        '<path d="M -11 -14 H 11" stroke="#c98f4d" stroke-width="3.4"/>' +
+        '<path d="M -12 -14 l 3 -5 h 18 l 3 5" fill="#f6ddb8" stroke="#d9a86a" stroke-width="2"/>' +
+        '<path d="M 11 -6 q 8 0 0 10" fill="none" stroke="#d9a86a" stroke-width="2.4"/>' +
+        heart(0, 6, 5, '#e2412f');
+    },
+    phone: function () {
+      return rect(-13, -24, 26, 48, 5, '#3b3f4a') +
+        '<rect x="-10.5" y="-20" width="21" height="38" rx="2.5" fill="#8fc3e8"/>' +
+        heart(0, -3, 6.5, '#fff') + '<circle cx="0" cy="21" r="2.4" fill="#cfd4dc"/>';
+    },
+    walkie: function () {
+      return rect(-11, -16, 22, 38, 4, '#4b5563') +
+        '<rect x="-8" y="-12" width="16" height="14" rx="2" fill="#cfe3f2"/>' +
+        '<circle cx="-5" cy="8" r="3" fill="#e2b04a"/><circle cx="4" cy="8" r="3" fill="#7fbf6a"/>' +
+        '<path d="M 6 -16 V -30" stroke="' + INK + '" stroke-width="3.4" stroke-linecap="round"/>' +
+        '<path d="M 6 -30 q 6 -6 12 -2" fill="none" stroke="' + INK + '" stroke-width="2.6"/>' +
+        '<path d="M -6 22 h 12" stroke="#2f3640" stroke-width="3"/>';
+    },
+    ring: function () {
+      return '<circle cx="0" cy="6" r="13" fill="none" stroke="#e9b949" stroke-width="4.5"/>' +
+        '<path d="M 0 -14 l 7 7 l -7 7 l -7 -7 z" fill="#a8e2f5" stroke="#e9b949" stroke-width="2.4" stroke-linejoin="round"/>' +
+        '<g stroke="#fff" stroke-width="1.2" opacity=".9"><path d="M -4 -10 l 3 -2 M 4 -6 l 3 -2"/></g>';
+    },
+    skate: function () {
+      return '<g transform="rotate(-8)">' +
+        '<rect x="-26" y="-4" width="52" height="8" rx="4" fill="#e2685f"/>' +
+        '<path d="M -26 4 L 26 4" stroke="#c14b43" stroke-width="3"/>' +
+        '<circle cx="-14" cy="9" r="4" fill="#4b5563"/><circle cx="14" cy="9" r="4" fill="#4b5563"/>' +
+        '<path d="M -20 -4 q 20 -8 40 0" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/></g>';
+    },
+    flower: function () {
+      var p = '', i;
+      for (i = 0; i < 6; i++) {
+        p += '<ellipse cx="0" cy="-11" rx="6" ry="9" fill="#ffb3c9" transform="rotate(' + (i * 60) + ')"/>';
+      }
+      return '<path d="M 0 10 V 28" stroke="#6aa84f" stroke-width="3.4" stroke-linecap="round"/>' +
+        '<path d="M 0 20 q -9 -2 -11 -9 q 9 -1 11 9z" fill="#7cbb5c"/>' + p +
+        '<circle cx="0" cy="0" r="5" fill="#ffd166"/>';
+    }
+  };
+
+  function held(name, hx, hy, scale, rot, flipX) {
+    if (!name || name === 'none' || !HELD[name]) return '';
+    return '<g class="held" transform="translate(' + R(hx) + ' ' + R(hy) + ') rotate(' + (rot || 0) +
+      ') scale(' + (flipX ? -1 : 1) * (scale || 1) + ' ' + (scale || 1) + ')">' + HELD[name]() + '</g>';
+  }
+
+  /* -------------------------------------------------------------- 校服 */
+  /* 浅蓝上衣 + 白色肩膀 + 右胸口深蓝校徽 */
+  function uniform(cls, bodyTop, cx) {
+    return '<g class="outfit-fit" clip-path="url(#' + cls + ')">' +
+      '<rect x="0" y="' + bodyTop + '" width="240" height="200" fill="#bee4f8"/>' +
+      '<rect x="0" y="' + bodyTop + '" width="240" height="8" fill="#9ed2ee"/>' +
+      /* 白色肩片（左肩 / 右肩） */
+      '<path d="M ' + (cx - 74) + ' ' + (bodyTop - 2) + ' q 36 22 64 2 l -6 24 q -28 -8 -52 2 Z" fill="#ffffff"/>' +
+      '<path d="M ' + (cx + 74) + ' ' + (bodyTop - 2) + ' q -36 22 -64 2 l 6 24 q 28 -8 52 2 Z" fill="#ffffff"/>' +
+      /* 领口 */
+      '<path d="M ' + (cx - 27) + ' ' + (bodyTop - 3) + ' q 27 21 54 0" fill="none" stroke="#ffffff" ' +
+      'stroke-width="8" stroke-linecap="round"/>' +
+      '<path d="M ' + cx + ' ' + (bodyTop + 6) + ' V ' + (bodyTop + 46) + '" stroke="#a7d9f1" stroke-width="2.4"/>' +
+      /* 右胸口校徽（人朝前时在画面左侧） */
+      badge(cx - 60, bodyTop + 30) +
+      '</g>';
+  }
+
+  function badge(x, y) {
+    return '<g transform="translate(' + x + ' ' + y + ')">' +
+      '<path d="M 0 0 H 26 V 16 L 13 27 L 0 16 Z" fill="#16386b" stroke="#0d2246" stroke-width="1.6" stroke-linejoin="round"/>' +
+      '<path d="M 13 5 l 2.4 5.2 l 5.6 .6 l -4.2 3.8 l 1.2 5.6 l -5 -2.8 l -5 2.8 l 1.2 -5.6 l -4.2 -3.8 l 5.6 -.6 Z" fill="#f0f4ff"/>' +
+      '</g>';
+  }
+
+  /* 校服细节放大图（幕布角落的说明卡） */
+  function uniformDetail() {
+    return '<svg viewBox="0 0 200 150" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' +
+      '<path d="M 40 150 L 40 76 Q 40 44 74 36 L 100 52 L 126 36 Q 160 44 160 76 L 160 150 Z" fill="#bee4f8" stroke="#8fcbe8" stroke-width="3"/>' +
+      '<path d="M 40 76 Q 40 44 74 36 L 100 52 L 74 74 Z" fill="#ffffff"/>' +
+      '<path d="M 160 76 Q 160 44 126 36 L 100 52 L 126 74 Z" fill="#ffffff"/>' +
+      '<path d="M 74 36 Q 100 66 126 36" fill="none" stroke="#ffffff" stroke-width="8" stroke-linecap="round"/>' +
+      '<path d="M 100 52 L 100 150" stroke="#a9daef" stroke-width="2.5"/>' +
+      '<g transform="translate(58 84) scale(1.35)">' +
+      '<path d="M 0 0 H 26 V 16 L 13 27 L 0 16 Z" fill="#16386b" stroke="#0d2246" stroke-width="1.6" stroke-linejoin="round"/>' +
+      '<path d="M 13 5 l 2.4 5.2 l 5.6 .6 l -4.2 3.8 l 1.2 5.6 l -5 -2.8 l -5 2.8 l 1.2 -5.6 l -4.2 -3.8 l 5.6 -.6 Z" fill="#f0f4ff"/>' +
+      '</g>' +
+      '<path d="M 100 100 L 92 132" stroke="#8fcbe8" stroke-width="3" fill="none" stroke-linecap="round"/>' +
+      '</svg>';
+  }
+
+  /* ------------------------------------------------------------------ 羊 */
+  function sheep(o) {
+    o = o || {};
+    var outfit = o.outfit || 'none';
+    var pose = o.pose || 'down';
+    var eye = o.eyes || 'open';
+    var mo = o.mouth || 'smile';
+    var cid = nid('fleece');
+    var out = [];
+
+    /* 腿 */
+    out.push('<g stroke="' + INK + '" stroke-width="9" stroke-linecap="round">' +
+      '<path d="M 102 196 L 96 236"/><path d="M 140 196 L 146 236"/></g>');
+    out.push('<g stroke="' + INK + '" stroke-width="8" stroke-linecap="round" opacity=".55">' +
+      '<path d="M 96 236 L 88 240"/><path d="M 146 236 L 154 240"/></g>');
+
+    /* 身体 */
+    out.push('<path class="body" d="' + FLEECE + '" fill="#fffdf9" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>');
+    out.push('<defs><clipPath id="' + cid + '"><path d="' + FLEECE + '"/></clipPath></defs>');
+
+    /* 衣服 */
+    if (outfit === 'uniform') {
+      out.push(uniform(cid, 160, 120));
+    } else if (outfit === 'dress') {
+      out.push('<g clip-path="url(#' + cid + ')">' +
+        '<rect x="0" y="158" width="240" height="200" fill="#fdf7ff"/>' +
+        '<path d="M 0 158 H 240 v 9 H 0 Z" fill="#efe0ee"/>' +
+        '<path d="M 0 168 H 240 v 11 H 0 Z" fill="#f4c6d6"/>' +
+        '<path d="M 0 179 H 240 v 2.5 H 0 Z" fill="#e0aac0"/>' +
+        '<g stroke="#e7d6ea" stroke-width="2" fill="none">' +
+        '<path d="M 6 206 q 15 11 30 0 q 15 11 30 0 q 15 11 30 0 q 15 11 30 0 q 15 11 30 0 ' +
+        'q 15 11 30 0 q 15 11 30 0 q 15 11 30 0"/></g>' +
+        '<path d="M 120 196 l -22 22 h 44 Z" fill="#fdf7ff" stroke="#e7d6ea" stroke-width="1.6"/>' +
+        '<path d="M 96 158 q 24 20 48 0" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"/>' +
+        '</g>');
+    } else if (outfit === 'jacket') {
+      out.push('<g clip-path="url(#' + cid + ')">' +
+        '<rect x="0" y="164" width="240" height="200" fill="#8fb7e8"/>' +
+        '<path d="M 0 164 H 240 v 9 H 0 Z" fill="#6f9ad4"/>' +
+        '<path d="M 100 164 L 100 200 M 140 164 L 140 200" stroke="#7ba6dd" stroke-width="3"/>' +
+        '<path d="M 92 176 h 16 M 132 176 h 16" stroke="#dfeaf8" stroke-width="4" stroke-linecap="round"/>' +
+        '<path d="M 90 164 q 30 22 60 0" fill="none" stroke="#eaf3ff" stroke-width="8" stroke-linecap="round"/>' +
+        '</g>');
+    } else if (outfit === 'mj') {
+      out.push('<g clip-path="url(#' + cid + ')">' +
+        '<rect x="0" y="176" width="240" height="200" fill="#b7472f"/>' +
+        '<path d="M 0 176 H 240 v 8 H 0 Z" fill="#9c3a25"/>' +
+        '<path d="M 96 176 q 24 18 48 0" fill="none" stroke="#d9694c" stroke-width="7" stroke-linecap="round"/>' +
+        '</g>');
+    }
+
+    /* 脸（照手绘：一个微微倾斜的方块脸） */
+    out.push('<g transform="rotate(-4 120 142)">' +
+      rect(81, 104, 78, 76, 24, '#fffefb') +
+      '<rect x="81" y="104" width="78" height="76" rx="24" fill="none" stroke="' + INK + '" stroke-width="5"/></g>');
+
+    /* 红蝴蝶结 */
+    out.push(bow(84, 62));
+
+    /* MJ 的红头发 */
+    if (outfit === 'mj') out.push(hairMJ());
+
+    /* 头纱（婚礼） */
+    if (outfit === 'dress') out.push(veil());
+
+    /* 五官 */
+    out.push(eyes(eye, 99, 131, 141, 131, 1.05));
+    out.push(blush(88, 160, 152, 160, 1));
+    out.push(mouth(mo, 120, 156, 1.05));
+
+    /* 手 */
+    var a = arms(80, 160, 170, pose, { width: 8 });
+    out.push(a.svg);
+
+    /* 手里的东西 */
+    var hold = o.item;
+    if (hold) {
+      var toRight = hold === 'racket' || hold === 'shuttle' || hold === 'ring';
+      var hp = toRight ? a.r : a.l;
+      out.push(held(hold, hp[0], hp[1], 0.78, toRight ? 6 : -10, !toRight));
+    }
+
+    /* 羊的构图更紧凑一点，画面里才够大 */
+    return wrap('sheep ' + (o.cls || ''), out.join(''), o.flip, o.blushGlow, '30 24 180 228');
+  }
+
+  function bow(cx, cy) {
+    return '<g class="bow" transform="translate(' + cx + ' ' + cy + ') rotate(-16)">' +
+      '<ellipse cx="-22" cy="0" rx="21" ry="15.5" fill="#e2412f"/>' +
+      '<ellipse cx="22" cy="-2" rx="21" ry="15.5" fill="#e2412f"/>' +
+      '<ellipse cx="-24" cy="-4" rx="9" ry="5" fill="#fff" opacity=".35"/>' +
+      '<ellipse cx="20" cy="-6" rx="9" ry="5" fill="#fff" opacity=".35"/>' +
+      '<path d="M -30 4 q 20 10 60 2" fill="none" stroke="#b8331f" stroke-width="2" opacity=".5"/>' +
+      '<circle cx="0" cy="0" r="8.5" fill="#c9331f"/>' +
+      '</g>';
+  }
+
+  function hairMJ() {
+    return '<g class="hair">' +
+      '<path d="M 52 96 C 40 60 66 34 120 34 C 174 34 200 60 188 96 C 176 84 168 78 156 74 ' +
+      'C 150 92 146 96 140 100 C 138 84 134 74 126 68 C 112 84 84 92 52 96 Z" fill="#c14a2c"/>' +
+      '<path d="M 46 92 C 36 124 40 150 48 168 C 58 150 56 120 46 92 Z" fill="#c14a2c"/>' +
+      '<path d="M 194 92 C 204 124 200 150 192 168 C 182 150 184 120 194 92 Z" fill="#c14a2c"/>' +
+      '<path d="M 70 54 C 90 42 118 40 140 46" fill="none" stroke="#e0704e" stroke-width="5" stroke-linecap="round" opacity=".8"/>' +
+      '</g>';
+  }
+
+  function veil() {
+    return '<g class="veil">' +
+      '<path d="M 46 92 C 34 130 36 176 44 210 C 62 192 58 140 52 96 Z" fill="rgba(255,255,255,.72)" ' +
+      'stroke="#e6d8e4" stroke-width="2"/>' +
+      '<path d="M 194 92 C 206 130 204 176 196 210 C 178 192 182 140 188 96 Z" fill="rgba(255,255,255,.72)" ' +
+      'stroke="#e6d8e4" stroke-width="2"/>' +
+      '<path d="M 50 98 C 68 62 172 62 190 98 C 178 80 62 80 50 98 Z" fill="rgba(255,255,255,.9)" ' +
+      'stroke="#e6d8e4" stroke-width="1.6"/>' +
+      '<g stroke="#e6d8e4" stroke-width="1.2" opacity=".8">' +
+      '<path d="M 58 120 q 10 8 20 0"/><path d="M 58 142 q 10 8 20 0"/>' +
+      '<path d="M 182 120 q -10 8 -20 0"/><path d="M 182 142 q -10 8 -20 0"/></g>' +
+      '<g fill="#ffd9e6" stroke="#e8b9cc" stroke-width="1.4">' +
+      '<circle cx="94" cy="70" r="5"/><circle cx="120" cy="64" r="5.6"/><circle cx="146" cy="70" r="5"/></g>' +
+      '<g fill="#fff5f8"><circle cx="94" cy="68" r="2"/><circle cx="120" cy="62" r="2.2"/>' +
+      '<circle cx="146" cy="68" r="2"/></g>' +
+      '</g>';
+  }
+
+  /* ------------------------------------------------------------------ 鸡 */
+  function chicken(o) {
+    o = o || {};
+    var outfit = o.outfit || 'none';
+    var pose = o.pose || 'down';
+    var eye = o.eyes || 'open';
+    var mo = o.mouth || 'smile';
+    var cid = nid('egg');
+    var out = [];
+
+    /* 身后的大把羽毛 */
+    var feathers = [
+      ['M 140 128 C 162 154 182 180 200 210', 9.5],
+      ['M 150 142 C 172 172 188 196 202 222', 8.5],
+      ['M 130 148 C 150 180 164 206 174 234', 9],
+      ['M 120 160 C 134 192 142 218 146 244', 8],
+      ['M 158 122 C 182 142 202 164 216 188', 8.5],
+      ['M 110 172 C 118 200 120 222 120 242', 7.5],
+      ['M 164 108 C 188 124 208 142 222 160', 7],
+      ['M 98 182 C 102 206 102 222 100 238', 6.5],
+      ['M 132 116 C 152 140 168 162 180 186', 7]
+    ];
+    out.push('<g class="feathers" fill="none" stroke="' + INK_SOFT + '" stroke-linecap="round" opacity=".92">' +
+      feathers.map(function (f) { return '<path d="' + f[0] + '" stroke-width="' + f[1] + '"/>'; }).join('') +
+      '</g>');
+
+    /* 冠羽 */
+    out.push('<g class="crest" fill="none" stroke="' + INK + '" stroke-linecap="round">' +
+      '<path d="M 112 48 C 116 20 140 6 170 4" stroke-width="6.5"/>' +
+      '<path d="M 106 52 C 112 26 136 12 166 8" stroke-width="6"/>' +
+      '<path d="M 118 50 C 126 30 142 20 158 18" stroke-width="5"/>' +
+      '</g>');
+
+    /* 身体 */
+    out.push('<path class="body" d="' + EGG + '" fill="#fffdf6" stroke="' + INK + '" stroke-width="5" stroke-linejoin="round"/>');
+    out.push('<defs><clipPath id="' + cid + '"><path d="' + EGG + '"/></clipPath></defs>');
+
+    /* 衣服 */
+    if (outfit === 'uniform') {
+      out.push(uniform(cid, 136, 116));
+    } else if (outfit === 'tux') {
+      out.push('<g clip-path="url(#' + cid + ')">' +
+        '<rect x="0" y="150" width="240" height="200" fill="#2c3550"/>' +
+        '<path d="M 0 150 H 240 v 8 H 0 Z" fill="#222a40"/>' +
+        '<path d="M 96 150 L 116 194 L 136 150 Z" fill="#fffdf9"/>' +
+        '<path d="M 96 150 L 80 150 L 108 200 L 116 194 Z" fill="#3a4666"/>' +
+        '<path d="M 136 150 L 152 150 L 124 200 L 116 194 Z" fill="#3a4666"/>' +
+        '<path d="M 106 186 h 20 M 104 194 h 24" stroke="#e8ecf5" stroke-width="2.4" opacity=".7"/>' +
+        '<g transform="translate(116 156)"><path d="M 0 0 l -13 -7 l 0 14 z" fill="#c9331f"/>' +
+        '<path d="M 0 0 l 13 -7 l 0 14 z" fill="#c9331f"/><circle cx="0" cy="0" r="3.6" fill="#b8331f"/></g>' +
+        '</g>');
+    } else if (outfit === 'suit') {
+      out.push('<g clip-path="url(#' + cid + ')">' +
+        '<rect x="0" y="152" width="240" height="200" fill="#3f4a63"/>' +
+        '<path d="M 0 152 H 240 v 8 H 0 Z" fill="#333c50"/>' +
+        '<path d="M 98 152 L 116 196 L 134 152 Z" fill="#f4f7fb"/>' +
+        '</g>');
+    } else if (outfit === 'spidey') {
+      out.push('<g clip-path="url(#' + cid + ')">' +
+        '<rect x="0" y="34" width="240" height="120" fill="#c0342b"/>' +
+        '<g stroke="#7d1e17" stroke-width="2" fill="none">' +
+        '<path d="M 116 34 V 154 M 66 34 L 166 154 M 166 34 L 66 154"/>' +
+        '<ellipse cx="116" cy="94" rx="30" ry="34"/><ellipse cx="116" cy="94" rx="52" ry="58"/>' +
+        '</g>' +
+        '<path d="M 116 154 v 62" stroke="#7d1e17" stroke-width="2.6"/>' +
+        '<ellipse class="mask-eye" cx="99" cy="90" rx="15" ry="20" fill="#fff" stroke="#1b1b1b" stroke-width="2.6" transform="rotate(-8 99 90)"/>' +
+        '<ellipse class="mask-eye" cx="143" cy="90" rx="15" ry="20" fill="#fff" stroke="#1b1b1b" stroke-width="2.6" transform="rotate(8 143 90)"/>' +
+        '</g>');
+    } else if (outfit === 'striped') {
+      out.push('<g clip-path="url(#' + cid + ')">' +
+        '<rect x="0" y="150" width="240" height="200" fill="#e8e3d6"/>' +
+        '<g fill="#c95f4e" opacity=".85">' +
+        '<rect x="0" y="156" width="240" height="10"/><rect x="0" y="176" width="240" height="10"/>' +
+        '<rect x="0" y="196" width="240" height="10"/></g>' +
+        '</g>');
+    }
+
+    /* 喙（朝左，和手绘稿一致） */
+    out.push('<g class="beak">' +
+      '<path d="M 64 98 L 24 116 L 64 132 Z" fill="#f4a63c" stroke="#c8801f" stroke-width="3" stroke-linejoin="round"/>' +
+      '<path d="M 30 116 H 64" stroke="#c8801f" stroke-width="2.4"/>' +
+      '<path d="M 44 110 L 52 107" stroke="#ffd79b" stroke-width="2.4" stroke-linecap="round"/>' +
+      '</g>');
+
+    /* 翅膀 */
+    if (outfit === 'none' || outfit === 'striped' || outfit === 'spidey') {
+      out.push('<path class="wing" d="M 76 150 C 92 136 114 138 120 154 C 106 172 84 172 76 150 Z" ' +
+        'fill="#f6f3ea" stroke="' + INK_SOFT + '" stroke-width="3.4" stroke-linejoin="round"/>');
+    }
+
+    /* 五官 / 面具眼睛 */
+    if (outfit === 'spidey') {
+      out.push(mouth(mo, 116, 158, 1));
+    } else {
+      out.push(eyes(eye, 104, 92, 104, 92, 1.15));
+      out.push(mouth(mo, 100, 128, 0.95));
+      if (o.blush) out.push(blush(76, 120, 132, 120, 1));
+    }
+
+    /* 礼帽 */
+    if (outfit === 'tux') {
+      out.push('<g class="hat" transform="translate(112 26) rotate(-6)">' +
+        '<ellipse cx="0" cy="8" rx="30" ry="7" fill="#222a40"/>' +
+        '<rect x="-17" y="-20" width="34" height="28" rx="3" fill="#2c3550"/>' +
+        '<rect x="-17" y="-2" width="34" height="6" fill="#c9331f"/>' +
+        '</g>');
+    }
+
+    /* 手 */
+    var a = arms(78, 156, 154, pose, { width: 8 });
+    out.push(a.svg);
+
+    var hold = o.item;
+    if (hold) {
+      var toRight = hold === 'racket' || hold === 'walkie' || hold === 'ring' || hold === 'shuttle';
+      var hp = toRight ? a.r : a.l;
+      out.push(held(hold, hp[0], hp[1], 0.78, toRight ? 8 : -12, !toRight));
+    }
+
+    return wrap('chicken ' + (o.cls || ''), out.join(''), o.flip, o.blushGlow, '8 0 224 250');
+  }
+
+  function wrap(cls, inner, flip, glow, vb) {
+    var body = flip
+      ? '<g transform="translate(240 0) scale(-1 1)">' + inner + '</g>'
+      : inner;
+    var halo = glow
+      ? '<ellipse cx="118" cy="240" rx="88" ry="12" fill="#ffd166" opacity=".28"/>'
+      : '';
+    return '<svg class="char-svg ' + cls + '" viewBox="' + (vb || '0 0 240 260') + '" ' +
+      'xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMax meet" aria-hidden="true">' +
+      halo + body + '</svg>';
+  }
+
+  /* ------------------------------------------------------------- 场景零件 */
+  function part(vb, inner, cls) {
+    return '<svg class="part-svg ' + (cls || '') + '" viewBox="' + vb +
+      '" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">' + inner + '</svg>';
+  }
+
+  var PARTS = {
+    /* 小猫：她喜欢 */
+    cat: function () {
+      return part('0 0 130 120',
+        '<path d="M 96 96 C 116 96 124 78 118 60" fill="none" stroke="#d99a55" stroke-width="9" stroke-linecap="round"/>' +
+        '<ellipse cx="64" cy="84" rx="33" ry="27" fill="#f8cb8e" stroke="#c98a4b" stroke-width="3.4"/>' +
+        '<path d="M 40 38 L 32 12 L 58 28 Z" fill="#f8cb8e" stroke="#c98a4b" stroke-width="3.4" stroke-linejoin="round"/>' +
+        '<path d="M 88 38 L 96 12 L 70 28 Z" fill="#f8cb8e" stroke="#c98a4b" stroke-width="3.4" stroke-linejoin="round"/>' +
+        '<path d="M 41 33 L 37 19 L 51 27 Z" fill="#ffb9c9"/><path d="M 87 33 L 91 19 L 77 27 Z" fill="#ffb9c9"/>' +
+        '<circle cx="64" cy="50" r="28" fill="#fbdcae" stroke="#c98a4b" stroke-width="3.4"/>' +
+        '<g class="blink" fill="none" stroke="#4b3a2a" stroke-width="3.2" stroke-linecap="round">' +
+        '<path d="M 50 48 q 4 -6 8 0"/><path d="M 70 48 q 4 -6 8 0"/></g>' +
+        '<path d="M 60 58 l 8 0 l -4 5 z" fill="#e08b9b"/>' +
+        '<path d="M 64 62 q -5 7 -11 3 M 64 62 q 5 7 11 3" fill="none" stroke="#4b3a2a" stroke-width="2.4" stroke-linecap="round"/>' +
+        '<g stroke="#c98a4b" stroke-width="1.8" stroke-linecap="round" opacity=".8">' +
+        '<path d="M 40 56 L 20 52 M 40 62 L 21 63 M 88 56 L 108 52 M 88 62 L 107 63"/></g>' +
+        '<g fill="#e8a860" opacity=".55"><path d="M 40 76 h 12 M 52 88 h 12"/></g>' +
+        '<path d="M 46 108 q 18 8 36 0" fill="none" stroke="#c98a4b" stroke-width="3"/>');
+    },
+    /* 小狗：我喜欢 */
+    dog: function () {
+      return part('0 0 130 120',
+        '<path d="M 32 74 C 14 70 14 50 24 44" fill="none" stroke="#c98a4b" stroke-width="9" stroke-linecap="round"/>' +
+        '<ellipse cx="64" cy="88" rx="32" ry="24" fill="#eac49a" stroke="#b07c42" stroke-width="3.4"/>' +
+        '<ellipse cx="33" cy="62" rx="9.5" ry="23" fill="#c98a4b" stroke="#b07c42" stroke-width="3.2" transform="rotate(-14 33 62)"/>' +
+        '<ellipse cx="95" cy="62" rx="9.5" ry="23" fill="#c98a4b" stroke="#b07c42" stroke-width="3.2" transform="rotate(14 95 62)"/>' +
+        '<circle cx="64" cy="50" r="27" fill="#f4d6b0" stroke="#b07c42" stroke-width="3.4"/>' +
+        '<ellipse cx="64" cy="62" rx="17" ry="13" fill="#fdf1e2"/>' +
+        '<g class="blink"><circle cx="54" cy="45" r="4.6" fill="#3f3122"/><circle cx="74" cy="45" r="4.6" fill="#3f3122"/>' +
+        '<circle cx="55.6" cy="43.4" r="1.6" fill="#fff"/><circle cx="75.6" cy="43.4" r="1.6" fill="#fff"/></g>' +
+        '<ellipse cx="64" cy="58" rx="7" ry="5.4" fill="#4b3a2a"/>' +
+        '<path d="M 64 63 v 4 M 64 67 q -6 6 -11 1 M 64 67 q 6 6 11 1" fill="none" stroke="#4b3a2a" ' +
+        'stroke-width="2.4" stroke-linecap="round"/>' +
+        '<path d="M 57 74 q 7 12 14 0 q -7 5 -14 0 z" fill="#ef8b95"/>' +
+        '<path d="M 40 84 q 24 12 48 0" fill="none" stroke="#b07c42" stroke-width="2.6" opacity=".5"/>');
+    },
+    /* 羽毛球网柱 */
+    net: function () {
+      return part('0 0 300 150',
+        '<rect x="0" y="14" width="10" height="130" rx="5" fill="#6e7b88"/>' +
+        '<rect x="290" y="14" width="10" height="130" rx="5" fill="#6e7b88"/>' +
+        '<rect x="4" y="18" width="292" height="70" fill="rgba(255,255,255,.42)" stroke="#8d99a6" stroke-width="2"/>' +
+        '<g stroke="#8d99a6" stroke-width="1.2" opacity=".9">' +
+        (function () {
+          var s = '', i;
+          for (i = 1; i < 14; i++) s += '<path d="M ' + (4 + i * 20.8) + ' 18 V 88"/>';
+          for (i = 1; i < 6; i++) s += '<path d="M 4 ' + (18 + i * 11.6) + ' H 296"/>';
+          return s;
+        })() + '</g>' +
+        '<rect x="0" y="86" width="300" height="8" rx="4" fill="#f2f5f8" stroke="#c3ccd4" stroke-width="1.6"/>');
+    },
+    /* 大屏幕 / 电影海报 */
+    screen: function () {
+      return part('0 0 320 190',
+        '<rect x="0" y="0" width="320" height="176" rx="10" fill="#1d2436" stroke="#0f1524" stroke-width="4"/>' +
+        '<rect x="10" y="10" width="300" height="156" rx="6" fill="#2b3350"/>' +
+        '<path d="M 10 10 H 310 V 166 H 10 Z" fill="none" stroke="rgba(255,255,255,.16)" stroke-width="2"/>' +
+        '<g id="screen-content"></g>' +
+        '<rect x="130" y="176" width="60" height="14" fill="#0f1524"/>');
+    },
+    /* 蜘蛛网 */
+    web: function () {
+      var s = '', i, ang, r;
+      for (i = 0; i < 8; i++) {
+        ang = (i / 8) * Math.PI / 2;
+        s += '<path d="M 0 0 L ' + R(220 * Math.cos(ang)) + ' ' + R(220 * Math.sin(ang)) + '"/>';
+      }
+      for (r = 40; r <= 200; r += 40) {
+        var seg = '';
+        for (i = 0; i <= 8; i++) {
+          ang = (i / 8) * Math.PI / 2;
+          seg += (i ? ' L ' : 'M ') + R(r * Math.cos(ang)) + ' ' + R(r * Math.sin(ang));
+        }
+        s += '<path d="' + seg + '"/>';
+      }
+      return part('0 0 230 230', '<g fill="none" stroke="rgba(255,255,255,.5)" stroke-width="1.6">' + s + '</g>');
+    },
+    /* 星星点点（挂在绳子上） */
+    bulb: function () {
+      return part('0 0 40 56',
+        '<path d="M 20 0 V 12" stroke="#4b5563" stroke-width="3"/>' +
+        '<circle cx="20" cy="30" r="15" fill="currentColor" opacity=".28"/>' +
+        '<circle cx="20" cy="30" r="9" fill="currentColor"/>' +
+        '<circle cx="17" cy="27" r="3" fill="#fff" opacity=".7"/>');
+    },
+    /* 地图上的定位点 */
+    pin: function () {
+      return part('0 0 40 52',
+        '<path d="M 20 50 C 20 50 36 30 36 19 A 16 16 0 1 0 4 19 C 4 30 20 50 20 50 Z" ' +
+        'fill="#e2412f" stroke="#a82a1c" stroke-width="2.6"/>' +
+        '<circle cx="20" cy="19" r="6.5" fill="#fff6f2"/>');
+    },
+    /* 火车 */
+    train: function () {
+      return part('0 0 120 60',
+        '<rect x="8" y="10" width="104" height="30" rx="12" fill="#e8eef6" stroke="#8895a6" stroke-width="3"/>' +
+        '<path d="M 20 18 h 22 v 14 h -22 z M 50 18 h 22 v 14 h -22 z" fill="#9fd0ee"/>' +
+        '<path d="M 96 10 q 16 6 14 30 h -14 z" fill="#c8d6e4" stroke="#8895a6" stroke-width="3"/>' +
+        '<circle cx="34" cy="46" r="7" fill="#4b5563"/><circle cx="74" cy="46" r="7" fill="#4b5563"/>' +
+        '<circle cx="34" cy="46" r="2.6" fill="#c8d6e4"/><circle cx="74" cy="46" r="2.6" fill="#c8d6e4"/>' +
+        '<path d="M 4 40 L 8 40 M 116 40 L 118 40" stroke="#8895a6" stroke-width="3"/>');
+    },
+    /* 对讲机（怪奇物语） */
+    walkie: function () {
+      return part('0 0 70 110',
+        '<rect x="12" y="26" width="46" height="78" rx="8" fill="#4b5563" stroke="#333b46" stroke-width="3"/>' +
+        '<rect x="18" y="34" width="34" height="26" rx="4" fill="#cfe3f2" stroke="#2b323b" stroke-width="2.4"/>' +
+        '<g fill="#8fd0f0" opacity=".9"><rect x="22" y="38" width="26" height="4"/><rect x="22" y="46" width="18" height="4"/></g>' +
+        '<circle cx="26" cy="74" r="6" fill="#e2b04a" stroke="#2b323b" stroke-width="2"/>' +
+        '<circle cx="44" cy="74" r="6" fill="#7fbf6a" stroke="#2b323b" stroke-width="2"/>' +
+        '<rect x="20" y="88" width="30" height="8" rx="4" fill="#333b46"/>' +
+        '<path d="M 46 26 V 6" stroke="#333b46" stroke-width="5" stroke-linecap="round"/>' +
+        '<path d="M 46 6 q 8 -8 16 -2" fill="none" stroke="#333b46" stroke-width="3.4"/>');
+    },
+    /* 街机屏幕：MADMAX */
+    arcade: function () {
+      return part('0 0 300 220',
+        '<rect x="0" y="16" width="300" height="160" rx="8" fill="#20242e" stroke="#12151c" stroke-width="4"/>' +
+        '<rect x="10" y="26" width="280" height="140" rx="5" fill="#0d1117"/>' +
+        '<text x="150" y="88" text-anchor="middle" font-family="Courier New,monospace" font-size="42" ' +
+        'font-weight="700" fill="#ff5d3b" letter-spacing="4">MADMAX</text>' +
+        '<text x="150" y="126" text-anchor="middle" font-family="Courier New,monospace" font-size="24" ' +
+        'fill="#ffd166" letter-spacing="2">750000</text>' +
+        '<text x="150" y="152" text-anchor="middle" font-family="Courier New,monospace" font-size="15" ' +
+        'fill="#7fe1a1" letter-spacing="1">HIGH SCORE</text>' +
+        '<rect x="120" y="176" width="60" height="40" fill="#20242e"/>');
+    },
+    /* 长椅 */
+    bench: function () {
+      return part('0 0 260 130',
+        '<rect x="10" y="40" width="240" height="14" rx="7" fill="#b07c42" stroke="#8b5f31" stroke-width="2.4"/>' +
+        '<rect x="10" y="62" width="240" height="14" rx="7" fill="#b07c42" stroke="#8b5f31" stroke-width="2.4"/>' +
+        '<rect x="18" y="18" width="224" height="10" rx="5" fill="#c08b4d" stroke="#8b5f31" stroke-width="2.4"/>' +
+        '<rect x="26" y="76" width="12" height="48" rx="5" fill="#8b5f31"/>' +
+        '<rect x="222" y="76" width="12" height="48" rx="5" fill="#8b5f31"/>');
+    },
+    /* 戒指盒 */
+    ringbox: function () {
+      return part('0 0 120 90',
+        '<rect x="14" y="34" width="92" height="46" rx="8" fill="#8c2f3a" stroke="#5f1e26" stroke-width="3"/>' +
+        '<path d="M 14 44 H 106" stroke="#e9b949" stroke-width="3"/>' +
+        '<path d="M 60 34 V 80" stroke="#e9b949" stroke-width="3"/>' +
+        '<circle cx="60" cy="30" r="15" fill="none" stroke="#e9b949" stroke-width="5"/>' +
+        '<path d="M 60 8 l 8 8 l -8 8 l -8 -8 z" fill="#a8e2f5" stroke="#e9b949" stroke-width="2.6" stroke-linejoin="round"/>');
+    },
+    /* 婚礼拱门 */
+    arch: function () {
+      return part('0 0 420 320',
+        '<path d="M 40 320 V 150 A 170 170 0 0 1 380 150 V 320" fill="none" stroke="#e8d9c5" stroke-width="16"/>' +
+        '<path d="M 40 320 V 150 A 170 170 0 0 1 380 150 V 320" fill="none" stroke="#c9b394" stroke-width="3" stroke-dasharray="8 10"/>' +
+        '<g>' + (function () {
+          var s = '', i, a, x, y;
+          for (i = 0; i <= 16; i++) {
+            a = Math.PI * (i / 16);
+            x = 210 - 170 * Math.cos(a);
+            y = 150 - 170 * Math.sin(a);
+            s += '<g transform="translate(' + R(x) + ' ' + R(y) + ')">' +
+              '<circle r="13" fill="#ffd9e6" opacity=".95"/>' +
+              '<circle r="7" fill="#ff9dbb" opacity=".95"/>' +
+              '<circle r="3" fill="#fff5f8"/></g>';
+          }
+          return s;
+        })() + '</g>');
+    }
+  };
+
+  /* 手持小道具同时也是场上的独立小道具，缺哪补哪 */
+  ['racket', 'shuttle', 'note', 'gift', 'lunch', 'popcorn', 'cup', 'phone', 'skate', 'flower']
+    .forEach(function (k) {
+      if (!PARTS[k]) {
+        PARTS[k] = function () { return part('-34 -34 68 68', HELD[k]()); };
+      }
+    });
+
+  global.CHARS = {
+    sheep: sheep,
+    chicken: chicken,
+    cloud: cloud,
+    heart: heart,
+    uniformDetail: uniformDetail,
+    badge: badge,
+    PARTS: PARTS
+  };
+})(typeof window !== 'undefined' ? window : globalThis);
+
+
+/* ============================================================================
+ * app.js —— 场景推进 / 角色状态 / 粒子 / 音乐 / 彩蛋
+ * ==========================================================================*/
+(function () {
+  'use strict';
+
+  var D = window.DATA, C = window.CHARS;
+
+  /* 截图模式：#static 关掉所有过渡与动画，保证每次渲染都一样 */
+  if (/static/.test(location.hash || '')) {
+    document.documentElement.classList.add('static-shot');
+  }
+  var stage = document.getElementById('stage');
+  var capText = document.getElementById('capText');
+  var caption = document.getElementById('caption');
+  var nextHint = document.getElementById('nextHint');
+  var dotsBox = document.getElementById('dots');
+
+  var total = D.SCENES.length;
+  var cur = 0, beat = 0, locked = false;
+
+  /* ======================================================== 每一拍的角色状态 */
+  var BEATS = {
+    entry: [
+      { l: { pose: 'wave' }, r: { pose: 'wave' } }
+    ],
+    school: [
+      { l: { pose: 'wave' }, r: { pose: 'down' } },
+      { l: { pose: 'down', eyes: 'happy' }, r: { pose: 'down', eyes: 'happy' } },
+      { l: { pose: 'reach', item: 'racket' }, r: { pose: 'up', item: 'racket', eyes: 'happy' } },
+      { l: { pose: 'front', item: 'lunch' }, r: { pose: 'front', item: 'cup' } },
+      { l: { pose: 'hold', item: 'note', eyes: 'happy' }, r: { pose: 'hold', item: 'note', eyes: 'happy', blush: '1' } }
+    ],
+    club: [
+      { l: { pose: 'wave', item: 'popcorn' }, r: { pose: 'down' } },
+      { l: { pose: 'up', eyes: 'happy' }, r: { pose: 'reach', item: 'gift', eyes: 'happy' } },
+      { l: { pose: 'hold', item: 'gift' }, r: { pose: 'hold', item: 'note', eyes: 'happy', blush: '1' } }
+    ],
+    distance: [
+      { l: { pose: 'wave', item: 'phone' }, r: { pose: 'wave', item: 'phone' } },
+      { l: { pose: 'front', item: 'phone' }, r: { pose: 'front', item: 'phone' } },
+      { l: { pose: 'front', item: 'phone', eyes: 'happy' }, r: { pose: 'front', item: 'phone', eyes: 'happy' } },
+      { l: { pose: 'hold', item: 'phone' }, r: { pose: 'hold', item: 'phone', blush: '1' } },
+      { l: { pose: 'cheer', eyes: 'happy' }, r: { pose: 'cheer', eyes: 'happy' } }
+    ],
+    spidey: [
+      { l: { pose: 'down' }, r: { pose: 'up', eyes: 'happy' } },
+      { l: { pose: 'reach' }, r: { pose: 'up', eyes: 'love' } },
+      { l: { pose: 'reach', mouth: 'kiss' }, r: { pose: 'up', eyes: 'closed', mouth: 'kiss', blush: '1' } },
+      { l: { pose: 'hold', eyes: 'happy' }, r: { pose: 'hold', eyes: 'love', blush: '1' } }
+    ],
+    stranger: [
+      { l: { pose: 'down' }, r: { pose: 'down' } },
+      { l: { pose: 'hold', eyes: 'happy' }, r: { pose: 'hold', eyes: 'happy', blush: '1' } },
+      { l: { pose: 'hold', item: 'walkie' }, r: { pose: 'hold', item: 'skate' } },
+      { l: { pose: 'hug', eyes: 'closed' }, r: { pose: 'hug', eyes: 'closed', blush: '1' } }
+    ],
+    promise: [
+      { l: { pose: 'hold', item: 'flower' }, r: { pose: 'hold' } },
+      { l: { pose: 'hold', item: 'flower', eyes: 'happy' }, r: { pose: 'hold', eyes: 'happy', blush: '1' } },
+      { l: { pose: 'hold', item: 'flower', eyes: 'love' }, r: { pose: 'hold', eyes: 'love', blush: '1' } }
+    ],
+    wedding: [
+      { l: { pose: 'down' }, r: { pose: 'down' } },
+      { l: { pose: 'wave', eyes: 'happy' }, r: { pose: 'wave', eyes: 'happy' } },
+      { l: { pose: 'hold', eyes: 'love' }, r: { pose: 'hold', eyes: 'love', blush: '1' } },
+      { l: { pose: 'reach', item: 'ring' }, r: { pose: 'reach', eyes: 'happy', blush: '1' } },
+      { l: { pose: 'hug', eyes: 'closed' }, r: { pose: 'hug', eyes: 'closed', blush: '1' } },
+      { l: { pose: 'hug', eyes: 'happy' }, r: { pose: 'hug', eyes: 'happy', blush: '1' } }
+    ]
+  };
+
+  /* ============================================================== 角色注入 */
+  function charOpts(el) {
+    var d = el.dataset;
+    return {
+      outfit: d.outfit || 'none',
+      pose: d.pose || 'down',
+      eyes: d.eyes || 'open',
+      mouth: d.mouth || 'smile',
+      item: d.item || null,
+      flip: d.flip === '1',
+      blush: d.blush === '1'
+    };
+  }
+
+  function paintChar(el) {
+    var fn = C[el.dataset.char];
+    if (fn) el.innerHTML = fn(charOpts(el));
+  }
+
+  function paintAll(root) {
+    (root || document).querySelectorAll('.char').forEach(function (el) {
+      if (!el._base) el._base = JSON.parse(JSON.stringify(el.dataset));
+      paintChar(el);
+    });
+    (root || document).querySelectorAll('[data-prop]').forEach(function (el) {
+      if (el.dataset.painted) return;
+      var name = el.dataset.prop;
+      var fn = (C.PARTS && C.PARTS[name]) || C[name];
+      if (fn) { el.insertAdjacentHTML('afterbegin', fn()); el.dataset.painted = '1'; }
+    });
+  }
+
+  function applyBeat(i, b) {
+    var sc = sceneEl(i);
+    if (!sc) return;
+    var key = D.SCENES[i].key;
+    var table = BEATS[key] || [];
+    var st = table[Math.min(b, table.length - 1)] || {};
+    sc.dataset.beat = String(b);
+    sc.querySelectorAll('.char').forEach(function (el, idx) {
+      var side = idx === 0 ? 'l' : 'r';
+      var base = el._base || {};
+      /* 先回到初始状态，再套用这一拍的设定 */
+      ['pose', 'eyes', 'mouth', 'item', 'blush'].forEach(function (k) {
+        if (base[k] !== undefined) el.dataset[k] = base[k]; else delete el.dataset[k];
+      });
+      var conf = st[side];
+      if (conf) Object.keys(conf).forEach(function (k) { el.dataset[k] = String(conf[k]); });
+      paintChar(el);
+    });
+  }
+
+  /* ================================================================ 粒子层 */
+  var FX = (function () {
+    var cv = document.getElementById('fx');
+    var g = cv.getContext('2d');
+    var W = 0, H = 0, DPR = 1, ps = [], mode = '', t0 = performance.now();
+    var COL = {
+      heart: ['#ff8fb1', '#ff5f8a', '#ffd166', '#ffb3c9'],
+      leaf: ['#ffd58a', '#f7b267', '#c8e08a', '#9fd0ee'],
+      petal: ['#ffc2d4', '#ff9ebb', '#fff0f4', '#ffe0a8'],
+      bokeh: ['#ffd166', '#8fd3ff', '#ff8fa3', '#c3f0a8', '#c9a8ff'],
+      snow: ['#ffffff', '#eaf4ff']
+    };
+    function pick(a) { return a[(Math.random() * a.length) | 0]; }
+    function rnd(a, b) { return a + Math.random() * (b - a); }
+
+    function resize() {
+      DPR = Math.min(2, window.devicePixelRatio || 1);
+      W = cv.width = Math.floor(innerWidth * DPR);
+      H = cv.height = Math.floor(innerHeight * DPR);
+      cv.style.width = innerWidth + 'px';
+      cv.style.height = innerHeight + 'px';
+    }
+
+    function make(kind) {
+      var p = { kind: kind };
+      if (kind === 'star') {
+        p.x = rnd(0, W); p.y = rnd(0, H * 0.92); p.r = rnd(0.7, 2.2) * DPR;
+        p.ph = rnd(0, 6.28); p.sp = rnd(0.6, 2.4); p.a = rnd(0.35, 0.95);
+      } else if (kind === 'heart') {
+        p.x = rnd(0, W); p.y = rnd(H * 0.15, H * 1.15); p.s = rnd(6, 15) * DPR;
+        p.vy = rnd(0.14, 0.5) * DPR; p.vx = rnd(-0.16, 0.16) * DPR; p.rot = rnd(-0.4, 0.4);
+        p.vr = rnd(-0.006, 0.006); p.c = pick(COL.heart); p.a = rnd(0.35, 0.85);
+      } else if (kind === 'leaf' || kind === 'petal') {
+        p.x = rnd(0, W); p.y = rnd(-H * 0.2, 0); p.s = rnd(6, 13) * DPR;
+        p.vy = rnd(0.35, 0.85) * DPR; p.sw = rnd(0.4, 1.3); p.ph = rnd(0, 6.28);
+        p.rot = rnd(0, 6.28); p.vr = rnd(-0.02, 0.02);
+        p.c = pick(kind === 'leaf' ? COL.leaf : COL.petal); p.a = rnd(0.5, 0.95);
+      } else if (kind === 'snow') {
+        p.x = rnd(0, W); p.y = rnd(-H * 0.2, 0); p.r = rnd(1.2, 3.4) * DPR;
+        p.vy = rnd(0.25, 0.8) * DPR; p.sw = rnd(0.3, 1.1); p.ph = rnd(0, 6.28); p.a = rnd(0.45, 0.95);
+      } else if (kind === 'rain') {
+        p.x = rnd(0, W * 1.1); p.y = rnd(-H * 0.3, H); p.len = rnd(10, 26) * DPR;
+        p.vy = rnd(6, 11) * DPR; p.vx = -rnd(0.6, 1.6) * DPR; p.a = rnd(0.12, 0.34);
+      } else if (kind === 'bokeh') {
+        p.x = rnd(0, W); p.y = rnd(0, H); p.r = rnd(4, 13) * DPR;
+        p.vy = rnd(-0.22, -0.05) * DPR; p.ph = rnd(0, 6.28); p.c = pick(COL.bokeh); p.a = rnd(0.18, 0.5);
+      } else if (kind === 'spark') {
+        p.x = rnd(0, W); p.y = rnd(H * 0.2, H * 1.05); p.r = rnd(1.5, 3.6) * DPR;
+        p.vy = rnd(-0.55, -0.16) * DPR; p.vx = rnd(-0.2, 0.2) * DPR; p.a = rnd(0.3, 0.9);
+        p.c = pick(COL.bokeh);
+      }
+      return p;
+    }
+
+    var PLAN = {
+      stars: { star: 150, heart: 7 },
+      leaves: { leaf: 34, star: 40 },
+      sparkle: { spark: 46, star: 30 },
+      hearts: { heart: 30, star: 60 },
+      rain: { rain: 110, heart: 6, spark: 12 },
+      snow: { snow: 110, bokeh: 14 },
+      petals: { petal: 46, spark: 26, heart: 8 }
+    };
+
+    function setMode(m) {
+      if (m === mode) return;
+      mode = m;
+      ps = [];
+      var plan = PLAN[m] || PLAN.stars;
+      Object.keys(plan).forEach(function (k) {
+        for (var i = 0; i < plan[k]; i++) {
+          var p = make(k);
+          if (k === 'leaf' || k === 'petal' || k === 'snow' || k === 'rain') p.y = rnd(-H * 0.3, H);
+          ps.push(p);
+        }
+      });
+    }
+
+    function heartPath(x, y, s, rot, color, a) {
+      g.save(); g.translate(x, y); g.rotate(rot); g.scale(s / 10, s / 10);
+      g.globalAlpha = a; g.fillStyle = color;
+      g.beginPath(); g.moveTo(0, 6);
+      g.bezierCurveTo(-9, -2, -12, -8, -8, -12);
+      g.bezierCurveTo(-5, -15, -1, -13, 0, -9);
+      g.bezierCurveTo(1, -13, 5, -15, 8, -12);
+      g.bezierCurveTo(12, -8, 9, -2, 0, 6);
+      g.closePath(); g.fill(); g.restore();
+    }
+
+    function frame(now) {
+      var t = (now - t0) / 1000;
+      g.clearRect(0, 0, W, H);
+      for (var i = 0; i < ps.length; i++) {
+        var p = ps[i];
+        if (p.kind === 'star') {
+          g.globalAlpha = p.a * (0.5 + 0.5 * Math.sin(t * p.sp + p.ph));
+          g.fillStyle = '#fff';
+          g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.283); g.fill();
+        } else if (p.kind === 'heart') {
+          p.y -= p.vy; p.x += p.vx + Math.sin(t * 1.2 + p.x * 0.01) * 0.25 * DPR; p.rot += p.vr;
+          if (p.y < -30 * DPR) { p.y = H + 20 * DPR; p.x = rnd(0, W); }
+          heartPath(p.x, p.y, p.s, p.rot, p.c, p.a);
+        } else if (p.kind === 'leaf' || p.kind === 'petal') {
+          p.y += p.vy; p.ph += 0.02;
+          p.x += Math.sin(p.ph) * p.sw * DPR; p.rot += p.vr;
+          if (p.y > H + 30 * DPR) { p.y = -20 * DPR; p.x = rnd(0, W); }
+          g.save(); g.translate(p.x, p.y); g.rotate(p.rot); g.globalAlpha = p.a; g.fillStyle = p.c;
+          if (p.kind === 'leaf') {
+            g.beginPath(); g.ellipse(0, 0, p.s * 0.6, p.s * 0.32, 0, 0, 6.283); g.fill();
+            g.globalAlpha = p.a * 0.5; g.strokeStyle = '#a98352'; g.lineWidth = 1 * DPR;
+            g.beginPath(); g.moveTo(-p.s * 0.5, 0); g.lineTo(p.s * 0.5, 0); g.stroke();
+          } else {
+            g.beginPath(); g.ellipse(0, 0, p.s * 0.55, p.s * 0.36, 0, 0, 6.283); g.fill();
+            g.globalAlpha = p.a * 0.6; g.fillStyle = '#fff';
+            g.beginPath(); g.ellipse(-p.s * 0.15, -p.s * 0.1, p.s * 0.2, p.s * 0.12, 0, 0, 6.283); g.fill();
+          }
+          g.restore();
+        } else if (p.kind === 'snow') {
+          p.y += p.vy; p.ph += 0.01; p.x += Math.sin(p.ph) * p.sw * DPR;
+          if (p.y > H + 10 * DPR) { p.y = -10 * DPR; p.x = rnd(0, W); }
+          g.globalAlpha = p.a; g.fillStyle = '#fff';
+          g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.283); g.fill();
+        } else if (p.kind === 'rain') {
+          p.y += p.vy; p.x += p.vx;
+          if (p.y > H + 20 * DPR) { p.y = -40 * DPR; p.x = rnd(0, W * 1.1); }
+          g.globalAlpha = p.a; g.strokeStyle = '#cfe6ff'; g.lineWidth = 1.1 * DPR;
+          g.beginPath(); g.moveTo(p.x, p.y); g.lineTo(p.x - p.vx * 1.6, p.y - p.len); g.stroke();
+        } else if (p.kind === 'bokeh') {
+          p.y += p.vy; p.ph += 0.015; p.x += Math.sin(p.ph) * 0.3 * DPR;
+          if (p.y < -30 * DPR) p.y = H + 20 * DPR;
+          g.globalAlpha = p.a; g.fillStyle = p.c;
+          g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.283); g.fill();
+          g.globalAlpha = p.a * 0.35;
+          g.beginPath(); g.arc(p.x, p.y, p.r * 1.9, 0, 6.283); g.fill();
+        } else if (p.kind === 'spark') {
+          p.y += p.vy; p.x += p.vx + Math.sin(t * 1.6 + p.x * 0.02) * 0.3 * DPR;
+          if (p.y < -20 * DPR) { p.y = H + 20 * DPR; p.x = rnd(0, W); }
+          g.globalAlpha = p.a * (0.55 + 0.45 * Math.sin(t * 3 + p.x * 0.05));
+          g.fillStyle = p.c;
+          g.beginPath(); g.arc(p.x, p.y, p.r, 0, 6.283); g.fill();
+        }
+      }
+      g.globalAlpha = 1;
+      requestAnimationFrame(frame);
+    }
+
+    resize();
+    addEventListener('resize', resize);
+    setMode('stars');
+    requestAnimationFrame(frame);
+    return { setMode: setMode };
+  })();
+
+  /* ================================================================ 音乐 */
+  var Music = (function () {
+    var A = null, master = null, wet = null, on = true, timer = null;
+    var step = 0, nextT = 0, BPM = 68, SPB = 60 / BPM;
+    var CUSTOM = (D && D.MUSIC) || '';
+    var el = null;
+    var CH = [
+      { root: 36, notes: [60, 64, 67] },   /* C  */
+      { root: 31, notes: [59, 62, 67] },   /* G  */
+      { root: 33, notes: [57, 60, 64] },   /* Am */
+      { root: 29, notes: [57, 60, 65] }    /* F  */
+    ];
+    var MEL = [
+      [[0, 0, 76, 0.9], [0, 1, 79, 0.9], [0, 2, 84, 2.0]],
+      [[1, 0, 83, 0.9], [1, 1, 79, 0.9], [1, 2, 74, 2.0]],
+      [[2, 0, 81, 0.9], [2, 1, 84, 0.9], [2, 2, 88, 2.0]],
+      [[3, 0, 86, 0.9], [3, 1, 84, 0.9], [3, 2, 81, 0.9], [3, 3, 79, 1.6]]
+    ];
+
+    function mtof(m) { return 440 * Math.pow(2, (m - 69) / 12); }
+
+    function ir(sec, decay) {
+      var rate = A.sampleRate, len = Math.floor(rate * sec);
+      var buf = A.createBuffer(2, len, rate);
+      for (var ch = 0; ch < 2; ch++) {
+        var d = buf.getChannelData(ch);
+        for (var i = 0; i < len; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / len, decay);
+      }
+      return buf;
+    }
+
+    function tone(t, freq, dur, type, gain, atk, rel, det) {
+      var o = A.createOscillator(), g = A.createGain();
+      o.type = type; o.frequency.value = freq;
+      if (det) o.detune.value = det;
+      g.gain.setValueAtTime(0.0001, t);
+      g.gain.exponentialRampToValueAtTime(Math.max(gain, 0.0002), t + atk);
+      g.gain.exponentialRampToValueAtTime(0.0001, t + dur + rel);
+      o.connect(g); g.connect(master); o.start(t); o.stop(t + dur + rel + 0.06);
+      if (wet) g.connect(wet);
+    }
+
+    function bell(t, freq, gain, dur) {
+      tone(t, freq, dur, 'sine', gain, 0.008, dur * 0.7);
+      tone(t, freq * 2.01, dur * 0.5, 'sine', gain * 0.35, 0.006, dur * 0.4);
+      tone(t, freq * 3.02, dur * 0.3, 'sine', gain * 0.16, 0.005, dur * 0.3);
+    }
+
+    function schedule(bar, t) {
+      var c = CH[bar];
+      var i;
+      /* 铺垫 */
+      for (i = 0; i < c.notes.length; i++) {
+        tone(t, mtof(c.notes[i] - 12), SPB * 3.4, 'triangle', 0.05, 0.9, 1.6, -6);
+        tone(t, mtof(c.notes[i] - 12), SPB * 3.4, 'triangle', 0.045, 1.0, 1.6, 7);
+      }
+      /* 低音 */
+      tone(t, mtof(c.root), SPB * 2.6, 'sine', 0.14, 0.05, 1.2);
+      /* 分解和弦 */
+      var pat = [0, 1, 2, 1, 0, 1, 2, 1];
+      for (i = 0; i < 8; i++) {
+        var nn = c.notes[pat[i]];
+        var g = i % 2 ? 0.035 : 0.055;
+        tone(t + i * SPB * 0.5, mtof(nn), 0.42, 'triangle', g, 0.01, 0.5);
+        tone(t + i * SPB * 0.5, mtof(nn + 12), 0.3, 'sine', g * 0.4, 0.01, 0.4);
+      }
+      /* 主旋律 */
+      MEL[bar].forEach(function (n) {
+        bell(t + n[1] * SPB, mtof(n[2]), 0.075, n[3] * SPB);
+      });
+    }
+
+    function tick() {
+      if (!A) return;
+      while (nextT < A.currentTime + 0.35) {
+        schedule(step % 4, nextT);
+        nextT += SPB * 4;
+        step++;
+      }
+    }
+
+    function start() {
+      /* 用自己准备的歌 */
+      if (CUSTOM) {
+        if (!el) { el = new Audio(CUSTOM); el.loop = true; el.volume = on ? 0.65 : 0; }
+        if (on) { var p = el.play(); if (p && p.catch) p.catch(function () {}); }
+        return;
+      }
+      if (A) { if (on) A.resume(); return; }
+      var AC = window.AudioContext || window.webkitAudioContext;
+      if (!AC) return;
+      A = new AC();
+      master = A.createGain();
+      master.gain.value = on ? 0.5 : 0.0001;
+      var conv = A.createConvolver();
+      conv.buffer = ir(2.6, 2.8);
+      wet = A.createGain(); wet.gain.value = 0.34;
+      wet.connect(conv); conv.connect(master);
+      master.connect(A.destination);
+      nextT = A.currentTime + 0.12; step = 0;
+      timer = setInterval(tick, 40);
+      tick();
+      if (A.state === 'suspended') A.resume();
+    }
+
+    function toggle() {
+      on = !on;
+      if (CUSTOM) {
+        if (!el) { el = new Audio(CUSTOM); el.loop = true; }
+        el.volume = on ? 0.65 : 0;
+        if (on) { var p = el.play(); if (p && p.catch) p.catch(function () {}); }
+        return on;
+      }
+      if (master) {
+        var t = A.currentTime;
+        master.gain.cancelScheduledValues(t);
+        master.gain.setTargetAtTime(on ? 0.5 : 0.0001, t, 0.15);
+      }
+      if (on) start();
+      return on;
+    }
+
+    function chime() {
+      if (!A || !on) return;
+      var t = A.currentTime + 0.02;
+      bell(t, mtof(84), 0.07, 1.1); bell(t + 0.07, mtof(88), 0.05, 1.2);
+    }
+
+    function blip() {
+      if (!A || !on) return;
+      tone(A.currentTime + 0.01, mtof(96), 0.09, 'sine', 0.035, 0.005, 0.12);
+    }
+
+    /* 婚礼钟声：一串上行琶音 + 亮和弦 */
+    function fanfare() {
+      if (!A) return;
+      var t = A.currentTime + 0.05, i;
+      var seq = [60, 64, 67, 72, 76, 79, 84];
+      seq.forEach(function (m, k) { bell(t + k * 0.11, mtof(m), 0.1, 1.4); });
+      var t2 = t + seq.length * 0.11 + 0.1;
+      [60, 64, 67, 72, 76, 84].forEach(function (m, k) {
+        bell(t2 + k * 0.02, mtof(m), 0.085, 2.6);
+      });
+    }
+
+    return {
+      start: start, toggle: toggle, chime: chime, blip: blip, fanfare: fanfare,
+      get on() { return on; },
+      get started() { return !!(A || el); }
+    };
+  })();
+
+  /* =========================================================== 天幕 / 彩灯 */
+  function mulberry(a) {
+    return function () {
+      a |= 0; a = a + 0x6D2B79F5 | 0;
+      var t = Math.imul(a ^ a >>> 15, 1 | a);
+      t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t;
+      return ((t ^ t >>> 14) >>> 0) / 4294967296;
+    };
+  }
+
+  function buildSkyline() {
+    var box = document.getElementById('skyline');
+    if (!box || box.childElementCount) return;
+    var rand = mulberry(20241001), x = -4;
+    while (x < 102) {
+      var w = 5 + rand() * 8, h = 20 + rand() * 48;
+      var d = document.createElement('div');
+      d.className = 'bldg';
+      d.style.left = x + '%';
+      d.style.width = w + '%';
+      d.style.height = h + '%';
+      d.style.opacity = (0.45 + rand() * 0.55).toFixed(2);
+      box.appendChild(d);
+      x += w + 0.4;
+    }
+  }
+
+  function buildLights() {
+    var box = document.getElementById('lights');
+    if (!box || box.childElementCount) return;
+    var cols = ['#ffd166', '#ff8fa3', '#8fd3ff', '#c3f0a8', '#ffb86b', '#c9a8ff'];
+    var n = 15, i;
+    for (i = 0; i < n; i++) {
+      var t = i / (n - 1);
+      var s = document.createElement('span');
+      s.className = 'bulb';
+      s.style.left = (t * 100).toFixed(2) + '%';
+      s.style.top = (6 + 24 * Math.sin(Math.PI * t)).toFixed(2) + '%';
+      s.style.color = cols[i % cols.length];
+      s.style.setProperty('--d', (0.6 + i * 0.17).toFixed(2) + 's');
+      s.innerHTML = C.PARTS.bulb();
+      box.appendChild(s);
+    }
+  }
+
+  /* ============================================================== 文案区 */
+  function setCaption(txt, done) {
+    caption.classList.remove('show');
+    setTimeout(function () {
+      capText.textContent = txt || '';
+      if (txt) caption.classList.add('show');
+      if (done) done();
+    }, txt ? 200 : 0);
+  }
+
+  /* ============================================================== 场景控制 */
+  function sceneEl(i) { return document.querySelector('.scene[data-scene="' + i + '"]'); }
+
+  function buildDots() {
+    var html = '';
+    for (var i = 0; i < total; i++) {
+      html += '<button class="dot" type="button" data-i="' + i + '" title="第 ' + (i + 1) +
+        ' 幕"><span></span></button>';
+    }
+    dotsBox.innerHTML = html;
+    dotsBox.addEventListener('click', function (e) {
+      var b = e.target.closest('.dot');
+      if (!b) return;
+      e.stopPropagation();
+      if (locked) return;
+      gotoScene(+b.dataset.i);
+    });
+  }
+
+  function syncDots() {
+    dotsBox.querySelectorAll('.dot').forEach(function (d, i) {
+      d.classList.toggle('on', i === cur);
+      d.classList.toggle('past', i < cur);
+    });
+  }
+
+  function gotoScene(i, b) {
+    i = Math.max(0, Math.min(total - 1, i));
+    b = b || 0;
+    var old = sceneEl(cur);
+    if (old && old !== sceneEl(i)) old.classList.remove('active');
+    cur = i; beat = b;
+    var sc = sceneEl(i);
+    sc.classList.add('active');
+    sc.dataset.beat = String(b);
+    applyBeat(i, b);
+    var key = D.SCENES[i].key;
+    FX.setMode(D.SCENES[i].fx || 'stars');
+    if (key === 'spidey') buildSkyline();
+    if (key === 'stranger') buildLights();
+    var bt = D.SCENES[i].beats[b];
+    setCaption(bt ? bt.text : '');
+    syncDots();
+    updateHint();
+    if (key === 'wedding' && b === 0) setTimeout(function () { Music.fanfare(); }, 600);
+    if (key !== 'entry') Music.chime();
+    /* 最后一幕的收尾 */
+    var card = document.getElementById('finalCard');
+    card.classList.toggle('show', key === 'wedding' && b >= D.SCENES[i].beats.length);
+    if (card.classList.contains('show')) showDays();
+    /* 锁一小会儿，防止连点冲太快 */
+    locked = true;
+    setTimeout(function () { locked = false; }, 260);
+  }
+
+  function updateHint() {
+    var key = D.SCENES[cur].key;
+    var isLast = beat >= D.SCENES[cur].beats.length - 1;
+    var cardShown = document.getElementById('finalCard').classList.contains('show');
+    nextHint.classList.toggle('hide', key === 'promise' || cardShown);
+    nextHint.classList.toggle('last', isLast && key !== 'promise');
+    if (key === 'promise') nextHint.textContent = '点一下那颗心 ♥';
+    else nextHint.innerHTML = (isLast ? '继续' : '点击继续') + ' <span>›</span>';
+  }
+
+  function next() {
+    if (locked) return;
+    var key = D.SCENES[cur].key;
+    var only = D.SCENES[cur].only;
+    if (only) return;                       /* 这一幕只认彩蛋 */
+    var card = document.getElementById('finalCard');
+    if (key === 'wedding' && card.classList.contains('show')) return;
+    if (beat < D.SCENES[cur].beats.length - 1) {
+      beat++;
+      applyBeat(cur, beat);
+      setCaption(D.SCENES[cur].beats[beat].text);
+      Music.blip();
+      updateHint();
+      locked = true;
+      setTimeout(function () { locked = false; }, 200);
+    } else {
+      if (key === 'wedding') {
+        /* 彩蛋里的最后一屏：信 */
+        card.classList.add('show');
+        showDays();
+        setCaption('');
+        updateHint();
+        nextHint.classList.add('hide');
+        return;
+      }
+      gotoScene(cur + 1, 0);
+    }
+  }
+
+  function prev() {
+    if (locked) return;
+    var card = document.getElementById('finalCard');
+    if (card.classList.contains('show')) {
+      card.classList.remove('show');
+      updateHint();
+      return;
+    }
+    if (beat > 0) {
+      beat--;
+      applyBeat(cur, beat);
+      setCaption(D.SCENES[cur].beats[beat].text);
+      updateHint();
+    } else if (cur > 0) {
+      gotoScene(cur - 1, Math.max(0, D.SCENES[cur - 1].beats.length - 1));
+    }
+  }
+
+  function showDays() {
+    var start = new Date(D.START + 'T00:00:00');
+    var now = new Date();
+    var days = Math.floor((now - start) / 86400000) + 1;
+    var el = document.getElementById('daysNum');
+    if (el) el.textContent = String(days);
+  }
+
+  function fillLetter() {
+    var box = document.getElementById('letterBody');
+    if (!box) return;
+    box.innerHTML = D.LETTER.lines.map(function (t, i) {
+      var cls = i === 0 ? 'salute' : (i === D.LETTER.lines.length - 1 ? 'sign' : '');
+      return '<p class="' + cls + '">' + t + '</p>';
+    }).join('');
+  }
+
+  /* ================================================================== 启动 */
+  function init() {
+    paintAll();
+    buildDots();
+    fillLetter();
+    showDays();
+    var first = sceneEl(0);
+    first.classList.add('active');
+    applyBeat(0, 0);
+    FX.setMode(D.SCENES[0].fx);
+    syncDots();
+    nextHint.innerHTML = '点击开始 <span>›</span>';
+
+    /* 进度锁：应用启动后一点点时间才允许点击，避免误触直接跳过封面 */
+    locked = true;
+    setTimeout(function () { locked = false; }, 900);
+
+    /* 支持 #s=2&b=1 直接跳到某一幕（做截图 / 分享定位用）
+       #auto=800 还可以自动往下播，用来做端到端自测 */
+    var am = /auto=(\d+)/.exec(location.hash || '');
+    if (am) {
+      var gap = Math.max(120, parseInt(am[1], 10) || 800);
+      setInterval(function () { if (!locked) next(); }, gap);
+    }
+    var m = /s=(\d+)(?:&b=(\d+))?/.exec(location.hash || '');
+    if (m) {
+      var si = Math.min(total - 1, parseInt(m[1], 10) || 0);
+      var sb = Math.min(D.SCENES[si].beats.length, parseInt(m[2] || '0', 10) || 0);
+      if (si === 0) {
+        first.classList.add('active');
+        applyBeat(0, 0);
+      } else {
+        gotoScene(si, sb);
+      }
+      locked = false;
+    }
+    if (/card/.test(location.hash || '')) {
+      gotoScene(total - 1, D.SCENES[total - 1].beats.length);
+      locked = false;
+    }
+  }
+
+  /* 点击任意处推进 */
+  document.addEventListener('click', function (e) {
+    if (e.target.closest('#hud') || e.target.closest('#finalCard') ||
+        e.target.closest('#eggHeart')) return;
+    next();
+  });
+
+  document.getElementById('btnMusic').addEventListener('click', function (e) {
+    e.stopPropagation();
+    var fresh = !Music.started;
+    Music.start();
+    if (fresh) {                       /* 第一次点：就是开音乐 */
+      this.classList.remove('off');
+      this.textContent = '♪';
+      return;
+    }
+    var on = Music.toggle();
+    this.classList.toggle('off', !on);
+    this.textContent = on ? '♪' : '✕';
+  });
+
+  document.getElementById('btnPrev').addEventListener('click', function (e) {
+    e.stopPropagation();
+    prev();
+  });
+
+  document.getElementById('eggHeart').addEventListener('click', function (e) {
+    e.stopPropagation();
+    if (locked) return;
+    Music.fanfare();
+    gotoScene(cur + 1, 0);
+  });
+
+  document.getElementById('replay').addEventListener('click', function (e) {
+    e.stopPropagation();
+    document.getElementById('finalCard').classList.remove('show');
+    gotoScene(0, 0);
+  });
+
+  document.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowRight' || e.key === ' ' || e.key === 'Enter') { e.preventDefault(); next(); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); prev(); }
+    if (e.key === 'm' || e.key === 'M') { Music.start(); Music.toggle(); }
+  });
+
+  /* 第一次点击的时候把音乐带起来（浏览器要求用户手势） */
+  document.addEventListener('click', function once() {
+    Music.start();
+    document.removeEventListener('click', once);
+  }, { once: true });
+
+  init();
+})();
+
+</script>
+</body>
+</html>

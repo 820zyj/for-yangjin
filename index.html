@@ -120,11 +120,19 @@ body.card-open #fx { opacity: 0; }
 .entry-inner {
   position: absolute; inset: 0;
   display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding-bottom: 6vh;
+  padding-top: 20vh;
   text-align: center;
 }
+/* 封面标题独立一层：在粒子之上，永远不会被飘心压住 */
+.entry-top {
+  position: fixed; left: 0; right: 0; top: 11vh; z-index: 6;
+  display: flex; flex-direction: column; align-items: center;
+  gap: 2.4vh; text-align: center; pointer-events: none;
+  opacity: 0; transition: opacity .8s ease;
+}
+body.entry-open .entry-top { opacity: 1; }
 .eyebrow {
-  font-size: clamp(11px, 1.15vw, 15px); letter-spacing: .5em; margin: 0 0 2.2vh;
+  font-size: clamp(11px, 1.15vw, 15px); letter-spacing: .5em; margin: 0;
   color: rgba(255, 226, 170, .82); text-indent: .5em;
 }
 .entry-title {
@@ -142,15 +150,15 @@ body.card-open #fx { opacity: 0; }
 .entry-sub {
   font-family: var(--serif);
   font-size: clamp(14px, 1.7vw, 22px); letter-spacing: .34em; text-indent: .34em;
-  color: rgba(255, 255, 255, .8); margin: 2.6vh 0 0;
+  color: rgba(255, 255, 255, .8); margin: 0;
   animation: riseIn 1.4s .3s ease both;
 }
 .couple { display: flex; align-items: flex-end; gap: clamp(18px, 7vw, 130px); }
-.couple-entry { margin-top: 4.5vh; animation: riseIn 1.5s .5s ease both; }
+.couple-entry { animation: riseIn 1.5s .5s ease both; }
 .couple-entry .char { position: relative; bottom: 0; width: calc(var(--cw) * .92); filter: none; }
 .couple-entry .char svg { animation: bob 4.8s ease-in-out infinite; }
 .entry-hint {
-  margin: 4.3vh 0 0; font-size: clamp(12px, 1.15vw, 15px); color: rgba(255, 255, 255, .62);
+  margin: 4vh 0 0; font-size: clamp(12px, 1.15vw, 15px); color: rgba(255, 255, 255, .62);
   letter-spacing: .16em;
   animation: hintPulse 2.6s ease-in-out infinite;
 }
@@ -760,6 +768,8 @@ body.card-open #fx { opacity: 0; }
 /* ============================================================== 自适应 */
 @media (max-width: 860px) {
   :root { --cw: clamp(104px, 30vw, 168px); }
+  .entry-top { top: 13vh; gap: 1.6vh; }
+  .moon { top: 3vh; right: 6vw; width: clamp(62px, 15vw, 96px); }
   .char { bottom: 27vh; }
   .char-l { left: 4vw; } .char-r { right: 4vw; }
   .scene-school .char-l { left: 5vw; } .scene-school .char-r { right: 5vw; }
@@ -833,9 +843,6 @@ html.static-shot .scene.active { visibility: visible; }
     <div class="hill hill-far"></div>
     <div class="hill hill-near"></div>
     <div class="entry-inner">
-      <p class="eyebrow">2024.10.01 &nbsp;—&nbsp; 2026.10.01</p>
-      <h1 class="entry-title">张尧瑾 <span class="amp">❤</span> 杨瑾</h1>
-      <p class="entry-sub">二 &nbsp;周 &nbsp;年 &nbsp;快 &nbsp;乐</p>
       <div class="couple couple-entry">
         <div class="char" data-char="chicken" data-pose="wave" data-flip="1"></div>
         <div class="char" data-char="sheep" data-pose="wave"></div>
@@ -992,6 +999,13 @@ html.static-shot .scene.active { visibility: visible; }
   </section>
 
 </main>
+
+<!-- 封面标题：单独放在粒子层之上，保证不会被飘心挡住 -->
+<div class="entry-top" id="entryTop">
+  <p class="eyebrow">2024.10.01 &nbsp;—&nbsp; 2026.10.01</p>
+  <h1 class="entry-title">张尧瑾 <span class="amp">❤</span> 杨瑾</h1>
+  <p class="entry-sub">二 &nbsp;周 &nbsp;年 &nbsp;快 &nbsp;乐</p>
+</div>
 
 <div id="hud">
   <div class="dots" id="dots"></div>
@@ -2513,6 +2527,7 @@ html.static-shot .scene.active { visibility: visible; }
     var old = sceneEl(cur);
     if (old && old !== sceneEl(i)) old.classList.remove('active');
     cur = i; beat = b;
+    document.body.classList.toggle('entry-open', D.SCENES[i].key === 'entry');
     var sc = sceneEl(i);
     sc.classList.add('active');
     sc.dataset.beat = String(b);
@@ -2619,6 +2634,7 @@ html.static-shot .scene.active { visibility: visible; }
     showDays();
     var first = sceneEl(0);
     first.classList.add('active');
+    document.body.classList.add('entry-open');
     applyBeat(0, 0);
     FX.setMode(D.SCENES[0].fx);
     syncDots();

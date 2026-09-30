@@ -231,7 +231,6 @@ body.card-open #fx { opacity: 0; }
 }
 @keyframes trailFlow { to { stroke-dashoffset: -48; } }
 .prop-shuttle { left: 45%; top: 50%; width: clamp(34px, 3.6vw, 54px); z-index: 5; }
-.prop-lunch { left: 30%; bottom: 15vh; width: clamp(70px, 7vw, 110px); opacity: 0; transition: .6s; z-index: 4; }
 .prop-note {
   left: 50%; bottom: 56vh; width: clamp(60px, 6vw, 96px); opacity: 0;
   transition: .7s cubic-bezier(.3, .9, .3, 1); z-index: 5;
@@ -250,11 +249,9 @@ body.card-open #fx { opacity: 0; }
 .uniform-art { border-radius: 12px; overflow: hidden; background: linear-gradient(180deg, #eaf6ff, #d5ecfa); }
 .scene-school[data-beat="1"] .uniform-card,
 .scene-school[data-beat="2"] .uniform-card,
-.scene-school[data-beat="3"] .uniform-card,
-.scene-school[data-beat="4"] .uniform-card { opacity: 1; translate: 0 0; }
+.scene-school[data-beat="3"] .uniform-card { opacity: 1; translate: 0 0; }
 .scene-school[data-beat="2"] .prop-shuttle { animation: shuttleFly 1.9s cubic-bezier(.4, 0, .6, 1) infinite; }
-.scene-school[data-beat="3"] .prop-shuttle,
-.scene-school[data-beat="4"] .prop-shuttle { opacity: 0; }
+.scene-school[data-beat="3"] .prop-shuttle { opacity: 0; }
 @keyframes shuttleFly {
   0% { left: 22%; top: 60%; rotate: -20deg; }
   50% { left: 50%; top: 36%; rotate: 150deg; }
@@ -267,14 +264,85 @@ body.card-open #fx { opacity: 0; }
 }
 .scene-school[data-beat="2"] .char-r .char-svg .held { animation-delay: -0.95s; }
 @keyframes swing { 0%, 100% { rotate: -18deg; } 45% { rotate: 26deg; } }
-.scene-school[data-beat="3"] .prop-lunch { opacity: 1; bottom: 15vh; }
-.scene-school[data-beat="4"] .prop-note { opacity: 1; animation: noteFly 2.6s ease-in-out infinite; }
+.scene-school[data-beat="3"] .prop-note { opacity: 1; animation: noteFly 2.6s ease-in-out infinite; }
 @keyframes noteFly {
   0%, 100% { translate: 0 0; rotate: -7deg; }
   50% { translate: -6vw 3vh; rotate: 8deg; }
 }
 
-/* ========================================================== 2 · 欧美社团 */
+/* ============================================================ 2 · 食堂 */
+.bg-canteen {
+  background:
+    radial-gradient(760px 460px at 50% 4%, rgba(255, 247, 216, .9), transparent 62%),
+    linear-gradient(180deg, #fdf4e6 0%, #f8ead4 44%, #efdcc0 100%);
+}
+.bg-canteen::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 46vh;
+  background:
+    repeating-linear-gradient(90deg, rgba(255, 255, 255, .5) 0 2px, transparent 2px 76px),
+    repeating-linear-gradient(180deg, rgba(255, 255, 255, .5) 0 2px, transparent 2px 58px),
+    linear-gradient(180deg, #d3e8db, #b9d8c6);
+}
+.canteen-windows {
+  position: absolute; left: 7vw; right: 7vw; top: 7vh; height: 18vh; z-index: 1;
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 2.4vw;
+}
+.canteen-windows i {
+  border-radius: 10px 10px 4px 4px;
+  background: linear-gradient(180deg, #d3ecff 0%, #b6dcf6 60%, #cfe6f4 100%);
+  border: 6px solid #fdfaf3;
+  box-shadow: 0 10px 22px rgba(120, 150, 180, .18), inset 0 0 0 1px rgba(255, 255, 255, .7);
+}
+.canteen-windows i:nth-child(1) { background-image: linear-gradient(180deg, #f6fbff, #d8edfb); }
+.canteen-board {
+  position: absolute; left: 6vw; top: 31vh; width: min(23vw, 300px); z-index: 1;
+  padding: 16px 18px; border-radius: 10px;
+  background: #34503f; border: 6px solid #8a6a44;
+  box-shadow: 0 14px 28px rgba(60, 40, 20, .22);
+}
+.canteen-board i { display: block; height: 8px; margin: 0 0 10px; border-radius: 4px; background: rgba(255, 255, 255, .6); }
+.canteen-board i:nth-child(2) { width: 82%; }
+.canteen-board i:nth-child(3) { width: 64%; }
+.canteen-board i:nth-child(4) { width: 76%; }
+.canteen-board i:nth-child(5) { width: 46%; }
+.canteen-lamp { position: absolute; top: 0; width: 3px; height: 8vh; background: #cbb693; z-index: 1; }
+.canteen-lamp::after {
+  content: ""; position: absolute; left: 50%; top: 100%; translate: -50% 0;
+  width: 54px; height: 22px; border-radius: 0 0 28px 28px;
+  background: linear-gradient(180deg, #fff8dd, #ffd98a);
+  box-shadow: 0 16px 46px rgba(255, 214, 120, .6);
+}
+.canteen-lamp.l1 { left: 33%; }
+.canteen-lamp.l2 { right: 33%; }
+.scene-canteen .char { bottom: 30vh; width: calc(var(--cw) * .95); z-index: 3; }
+.scene-canteen .char-l { left: 50%; right: auto; margin-left: calc(var(--cw) * -1.02); }
+.scene-canteen .char-r { left: 50%; right: auto; margin-left: calc(var(--cw) * .06); }
+.prop-table { left: 50%; translate: -50% 0; bottom: 16vh; width: min(78vw, 1040px); z-index: 4; }
+.prop-drumstick {
+  left: 50%; bottom: 40vh; width: clamp(38px, 4vw, 60px); z-index: 6;
+  opacity: 0; transition: opacity .6s;
+}
+.scene-canteen[data-beat="0"] .prop-drumstick { opacity: 1; animation: passLeg 3.4s ease-in-out infinite; }
+@keyframes passLeg {
+  0% { left: 60%; bottom: 38vh; rotate: -12deg; }
+  45% { left: 39%; bottom: 45vh; rotate: 14deg; }
+  55% { left: 39%; bottom: 45vh; rotate: 14deg; }
+  100% { left: 60%; bottom: 38vh; rotate: -12deg; }
+}
+.steam {
+  position: absolute; z-index: 5; width: clamp(26px, 2.6vw, 40px); height: clamp(30px, 3.4vh, 50px);
+  border-radius: 50%; background: rgba(255, 255, 255, .6);
+  filter: blur(6px); opacity: 0; pointer-events: none;
+}
+.steam.st1 { left: 32%; bottom: 30vh; animation: steamUp 3.6s ease-in-out infinite; }
+.steam.st2 { left: 58%; bottom: 31vh; animation: steamUp 3.6s ease-in-out infinite .9s; }
+@keyframes steamUp {
+  0% { opacity: 0; translate: 0 0; scale: .7; }
+  28% { opacity: .85; }
+  100% { opacity: 0; translate: 0 -70px; scale: 1.6; }
+}
+
+/* ========================================================== 3 · 欧美社团 */
 .bg-hall {
   background:
     radial-gradient(900px 560px at 50% 18%, rgba(255, 214, 150, .28), transparent 62%),
@@ -288,7 +356,7 @@ body.card-open #fx { opacity: 0; }
 .screen-copy {
   position: absolute; left: 10%; right: 10%; top: 22%;
   text-align: center; color: #ffe6b0; z-index: 3;
-  font-family: var(--serif); letter-spacing: .22em;
+  font-family: var(--serif); letter-spacing: .22em; line-height: 1.5;
 }
 .screen-copy span { display: block; font-size: clamp(15px, 2.1vw, 30px); text-shadow: 0 0 20px rgba(255, 200, 120, .6); }
 .screen-copy em {
@@ -793,7 +861,6 @@ html.static-shot .scene.active { visibility: visible; }
       <path d="M 21 65 Q 50 34 79 65" vector-effect="non-scaling-stroke"/>
     </svg>
     <div class="prop prop-shuttle" data-prop="shuttle"></div>
-    <div class="prop prop-lunch" data-prop="lunch"></div>
     <div class="prop prop-note" data-prop="note"></div>
     <div class="char char-l" data-char="chicken" data-outfit="uniform" data-pose="wave"
          data-item="racket" data-flip="1"></div>
@@ -805,13 +872,30 @@ html.static-shot .scene.active { visibility: visible; }
     </aside>
   </section>
 
-  <!-- 2 · 欧美社团 -->
-  <section class="scene scene-club" data-scene="2" data-key="club" data-beat="0">
+  <!-- 2 · 食堂 -->
+  <section class="scene scene-canteen" data-scene="2" data-key="canteen" data-beat="0">
+    <div class="bg bg-canteen"></div>
+    <div class="canteen-windows"><i></i><i></i><i></i><i></i></div>
+    <div class="canteen-board"><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="canteen-lamp l1"></div>
+    <div class="canteen-lamp l2"></div>
+    <div class="char char-l" data-char="chicken" data-outfit="uniform" data-pose="front"
+         data-item="lunch" data-flip="1"></div>
+    <div class="char char-r" data-char="sheep" data-outfit="uniform" data-pose="front"
+         data-item="cup"></div>
+    <div class="steam st1"></div>
+    <div class="steam st2"></div>
+    <div class="prop prop-table" data-prop="table"></div>
+    <div class="prop prop-drumstick" data-prop="drumstick"></div>
+  </section>
+
+  <!-- 3 · 欧美社团 -->
+  <section class="scene scene-club" data-scene="3" data-key="club" data-beat="0">
     <div class="bg bg-hall"></div>
     <div class="prop prop-screen" data-prop="screen">
       <div class="screen-copy">
         <span>MOVIE NIGHT</span>
-        <em>欧美社团 · 我们放的剧</em>
+        <em>SPIDER-MAN: INTO THE SPIDER-VERSE</em>
       </div>
     </div>
     <div class="prop prop-popcorn" data-prop="popcorn"></div>
@@ -823,8 +907,8 @@ html.static-shot .scene.active { visibility: visible; }
     <div class="char char-r" data-char="sheep" data-pose="wave" data-item="note"></div>
   </section>
 
-  <!-- 3 · 双城记 -->
-  <section class="scene scene-distance" data-scene="3" data-key="distance" data-beat="0">
+  <!-- 4 · 双城记 -->
+  <section class="scene scene-distance" data-scene="4" data-key="distance" data-beat="0">
     <div class="bg bg-map"></div>
     <svg class="route-svg" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true">
       <path class="route-glow" d="M 806 78 C 640 58 380 128 168 232"/>
@@ -847,8 +931,8 @@ html.static-shot .scene.active { visibility: visible; }
     <div class="bubble bubble-r">今天也想你 ♡</div>
   </section>
 
-  <!-- 4 · 蜘蛛侠 & MJ -->
-  <section class="scene scene-spidey" data-scene="4" data-key="spidey" data-beat="0">
+  <!-- 5 · 蜘蛛侠 & MJ -->
+  <section class="scene scene-spidey" data-scene="5" data-key="spidey" data-beat="0">
     <div class="bg bg-city"></div>
     <div class="skyline" id="skyline"></div>
     <div class="prop prop-web" data-prop="web"></div>
@@ -859,8 +943,8 @@ html.static-shot .scene.active { visibility: visible; }
     <div class="kiss-spark">❤</div>
   </section>
 
-  <!-- 5 · 怪奇物语 -->
-  <section class="scene scene-stranger" data-scene="5" data-key="stranger" data-beat="0">
+  <!-- 6 · 怪奇物语 -->
+  <section class="scene scene-stranger" data-scene="6" data-key="stranger" data-beat="0">
     <div class="bg bg-gym"></div>
     <div class="string-lights" id="lights"></div>
     <div class="prop prop-arcade" data-prop="arcade"></div>
@@ -872,8 +956,8 @@ html.static-shot .scene.active { visibility: visible; }
     <div class="char char-r" data-char="sheep" data-outfit="jacket" data-pose="hold"></div>
   </section>
 
-  <!-- 6 · 承诺（彩蛋入口） -->
-  <section class="scene scene-promise" data-scene="6" data-key="promise" data-beat="0">
+  <!-- 7 · 承诺（彩蛋入口） -->
+  <section class="scene scene-promise" data-scene="7" data-key="promise" data-beat="0">
     <div class="bg bg-dusk"></div>
     <div class="moon moon-warm"></div>
     <div class="prop prop-bench" data-prop="bench"></div>
@@ -885,8 +969,8 @@ html.static-shot .scene.active { visibility: visible; }
     <p class="egg-hint">点一下这颗心 ♥</p>
   </section>
 
-  <!-- 7 · 彩蛋：婚礼 -->
-  <section class="scene scene-wedding" data-scene="7" data-key="wedding" data-beat="0">
+  <!-- 8 · 彩蛋：婚礼 -->
+  <section class="scene scene-wedding" data-scene="8" data-key="wedding" data-beat="0">
     <div class="bg bg-church"></div>
     <div class="prop prop-arch" data-prop="arch"></div>
     <div class="critter critter-cat" data-prop="cat"></div>
@@ -939,11 +1023,18 @@ html.static-shot .scene.active { visibility: visible; }
       key: 'school',
       fx: 'leaves',
       beats: [
-        { text: '故事从一间高中的教室开始 —— 那年秋天，我们穿着同一件校服。' },
+        { text: '那年秋天，我们穿着同一件校服。' },
         { text: '浅蓝色，肩膀上落着一块白，右胸口别着深蓝色的校徽。两件一模一样的衣服，像两个还没来得及认识的我们。' },
-        { text: '课间的羽毛球场：你扣杀，我满地捡球；谁输了谁请喝奶茶。' },
+        { text: '课间的羽毛球场：我扣杀，你在旁边一直给我加油。' },
+        { text: '还有那些折成小方块、从你们班传到我们班的纸条 ——「放学等我」。' }
+      ]
+    },
+    {
+      key: 'canteen',
+      fx: 'sparkle',
+      beats: [
         { text: '食堂里拼一张桌子，你总把鸡腿夹到我碗里，说你不爱吃。' },
-        { text: '还有那些折成小方块、从第一排传到最后一排的纸条 ——「放学等我」。' }
+        { text: '我们一起吃饭总是很慢。' }
       ]
     },
     {
@@ -952,7 +1043,7 @@ html.static-shot .scene.active { visibility: visible; }
       beats: [
         { text: '后来，我们成了同一个欧美社团的社长。' },
         { text: '你管片单和海报，我管音响和灯。我们放的第一部电影，是《蜘蛛侠：平行宇宙》。' },
-        { text: '每次活动散场，我们都会偷偷往对方书包里塞一个小礼物。' }
+        { text: '我们总是借着社长副社长的名义偷偷去约会。' }
       ]
     },
     {
@@ -1003,7 +1094,7 @@ html.static-shot .scene.active { visibility: visible; }
       beats: [
         { text: '现在，请两位主角入场 ——' },
         { text: '张尧瑾先生 & 杨瑾小姐。' },
-        { text: '第二年，我依然想娶你。' },
+        { text: '第二年，我依然喜欢你。' },
         { text: '交换戒指 —— 小猫做花童，小狗做伴郎，全场起立。' },
         { text: '「我愿意。」' }
       ]
@@ -1288,8 +1379,16 @@ html.static-shot .scene.active { visibility: visible; }
         '<circle cx="-14" cy="9" r="4" fill="#4b5563"/><circle cx="14" cy="9" r="4" fill="#4b5563"/>' +
         '<path d="M -20 -4 q 20 -8 40 0" fill="none" stroke="#fff" stroke-width="2" opacity=".7"/></g>';
     },
-    flower: function () {
-      var p = '', i;
+    /* 鸡腿（食堂那幕，她夹给我的） */
+    drumstick: function () {
+      return '<path d="M 4 22 C -8 16 -10 0 2 -6 C 12 -11 22 -6 24 2 C 26 10 20 18 12 20 Z" ' +
+        'fill="#c98a4b" stroke="#9a6431" stroke-width="2.4" stroke-linejoin="round"/>' +
+        '<path d="M -12 14 C -18 10 -18 4 -14 0 C -10 -4 -4 -2 -2 2 C 0 8 -6 16 -12 14 Z" ' +
+        'fill="#e6c49a" stroke="#9a6431" stroke-width="2.2" stroke-linejoin="round"/>' +
+        '<path d="M -14 6 l -6 -4 M -14 10 l -7 1" stroke="#e6c49a" stroke-width="3.4" stroke-linecap="round"/>' +
+        '<path d="M 4 -2 C 8 -6 16 -6 20 -2" fill="none" stroke="#8a5628" stroke-width="2" opacity=".7"/>';
+    },
+    flower: function () {      var p = '', i;
       for (i = 0; i < 6; i++) {
         p += '<ellipse cx="0" cy="-11" rx="6" ry="9" fill="#ffb3c9" transform="rotate(' + (i * 60) + ')"/>';
       }
@@ -1667,6 +1766,35 @@ html.static-shot .scene.active { visibility: visible; }
         'stroke-width="2.4" stroke-linecap="round"/>' +
         '<path d="M 58 70 q 6 11 12 0 z" fill="#ef8b95" stroke="#d2737d" stroke-width="1.6"/>');
     },
+    /* 食堂餐桌：桌上两个餐盘、两碗汤，蒸汽在外面用 CSS 画 */
+    table: function () {
+      return part('0 0 1000 300',
+        /* 桌面（近大远小的梯形 + 前缘） */
+        '<path d="M 96 118 H 904 L 980 196 H 20 Z" fill="#e0b077"/>' +
+        '<path d="M 96 118 H 904 L 914 138 H 86 Z" fill="#f0c894"/>' +
+        '<path d="M 20 196 H 980 L 980 214 H 20 Z" fill="#b9854e"/>' +
+        '<path d="M 20 214 H 980" stroke="#9a6b3a" stroke-width="3"/>' +
+        /* 桌腿 */
+        '<rect x="112" y="214" width="26" height="86" rx="8" fill="#a8743f"/>' +
+        '<rect x="862" y="214" width="26" height="86" rx="8" fill="#a8743f"/>' +
+        /* 两个餐盘 */
+        '<g class="tray t-left"><ellipse cx="300" cy="176" rx="104" ry="32" fill="#f4f7fa" ' +
+        'stroke="#c3ced6" stroke-width="3"/>' +
+        '<ellipse cx="300" cy="172" rx="88" ry="24" fill="#e8eef3"/>' +
+        '<ellipse cx="272" cy="172" rx="34" ry="16" fill="#fff6e2" stroke="#e2cfa8" stroke-width="2"/>' +
+        '<path d="M 256 170 q 16 -12 32 0 q -16 10 -32 0 z" fill="#f2c86e"/>' +
+        '<path d="M 320 172 q 14 -10 28 0 q -14 9 -28 0 z" fill="#8fbf6a"/>' +
+        '<circle cx="352" cy="178" r="9" fill="#e08b95"/></g>' +
+        /* 两个碗 */
+        '<g class="bowl t-right"><ellipse cx="700" cy="178" rx="76" ry="28" fill="#f7fafc" ' +
+        'stroke="#c3ced6" stroke-width="3"/>' +
+        '<ellipse cx="700" cy="174" rx="60" ry="19" fill="#eef4f8"/>' +
+        '<ellipse cx="700" cy="174" rx="46" ry="13" fill="#f6e7c6"/>' +
+        '<path d="M 662 172 q 38 -12 76 0" fill="none" stroke="#e0c79a" stroke-width="2.4"/></g>' +
+        /* 筷子 */
+        '<g stroke="#c98f4d" stroke-width="5" stroke-linecap="round">' +
+        '<path d="M 596 150 L 664 132"/><path d="M 600 158 L 668 140"/></g>');
+    },
     /* 羽毛球场：透视场地 + 球网（占满整个地面） */
     court: function () {
       var mesh = '', i, y;
@@ -1830,7 +1958,7 @@ html.static-shot .scene.active { visibility: visible; }
   };
 
   /* 手持小道具同时也是场上的独立小道具，缺哪补哪 */
-  ['racket', 'shuttle', 'note', 'gift', 'lunch', 'popcorn', 'cup', 'phone', 'skate', 'flower']
+  ['racket', 'shuttle', 'note', 'gift', 'lunch', 'popcorn', 'cup', 'phone', 'skate', 'flower', 'drumstick']
     .forEach(function (k) {
       if (!PARTS[k]) {
         PARTS[k] = function () { return part('-34 -34 68 68', HELD[k]()); };
@@ -1879,8 +2007,11 @@ html.static-shot .scene.active { visibility: visible; }
       { l: { pose: 'wave' }, r: { pose: 'down' } },
       { l: { pose: 'down', eyes: 'happy' }, r: { pose: 'down', eyes: 'happy' } },
       { l: { pose: 'reach', item: 'racket' }, r: { pose: 'up', item: 'racket', eyes: 'happy' } },
-      { l: { pose: 'front', item: 'lunch' }, r: { pose: 'front', item: 'cup' } },
       { l: { pose: 'hold', item: 'note', eyes: 'happy' }, r: { pose: 'hold', item: 'note', eyes: 'happy', blush: '1' } }
+    ],
+    canteen: [
+      { l: { pose: 'front', item: 'lunch' }, r: { pose: 'reach', item: 'drumstick', eyes: 'happy' } },
+      { l: { pose: 'front', item: 'cup', eyes: 'happy' }, r: { pose: 'front', item: 'lunch', eyes: 'happy', blush: '1' } }
     ],
     club: [
       { l: { pose: 'wave', item: 'popcorn' }, r: { pose: 'down' } },

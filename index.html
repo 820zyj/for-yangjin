@@ -39,7 +39,9 @@ body {
 svg { display: block; }
 button { font-family: inherit; }
 
-#fx { position: fixed; inset: 0; z-index: 1; pointer-events: none; }
+#fx { position: fixed; inset: 0; z-index: 3; pointer-events: none; transition: opacity .6s ease; }
+/* 最后一屏的信要看清楚，这时候把粒子收掉 */
+body.card-open #fx { opacity: 0; }
 #stage { position: fixed; inset: 0; z-index: 2; }
 
 /* ------------------------------------------------------------------ 场景 */
@@ -183,7 +185,7 @@ button { font-family: inherit; }
 @keyframes drift { from { translate: -10vw 0; } to { translate: 118vw 0; } }
 
 .school {
-  position: absolute; left: 50%; translate: -50% 0; bottom: 30vh; width: min(74vw, 900px);
+  position: absolute; left: 50%; translate: -50% 0; bottom: 46vh; width: min(74vw, 900px);
   opacity: .96;
 }
 .school-roof {
@@ -209,22 +211,29 @@ button { font-family: inherit; }
   background: linear-gradient(180deg, #5f7f9e, #43607c);
 }
 .ground {
-  position: absolute; left: 0; right: 0; bottom: 0; height: 30vh;
-  background: linear-gradient(180deg, #9db8cf 0%, #86a3bd 12%, #7c99b4 100%);
-  border-top: 3px solid rgba(255, 255, 255, .5);
-}
-.ground::after {
-  content: ""; position: absolute; left: 0; right: 0; top: 18%; height: 3px;
-  background: repeating-linear-gradient(90deg, rgba(255, 255, 255, .55) 0 34px, transparent 34px 74px);
+  position: absolute; left: 0; right: 0; bottom: 0; height: 48vh;
+  background: linear-gradient(180deg, #9db8cf 0%, #8fb0c9 14%, #86a3bd 100%);
 }
 .scene-school .char { bottom: 20vh; }
-.scene-school .char-l { left: 11vw; }
-.scene-school .char-r { right: 11vw; }
-.prop-net { left: 32%; bottom: 24vh; width: min(36vw, 430px); z-index: 4; }
-.prop-shuttle { left: 47%; bottom: 46vh; width: clamp(34px, 3.6vw, 56px); z-index: 5; }
-.prop-lunch { left: 41%; bottom: 20vh; width: clamp(70px, 7vw, 110px); opacity: 0; transition: .6s; }
+.scene-school .char-l { left: 14vw; }
+.scene-school .char-r { right: 14vw; }
+/* 塑胶球场（透视场地 + 球网）铺满地面 */
+.prop-court { left: 0; right: 0; bottom: 0; width: 100%; z-index: 2; }
+.shuttle-trail {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: 3;
+  opacity: 0; transition: opacity .5s;
+}
+.scene-school[data-beat="2"] .shuttle-trail { opacity: .85; }
+.shuttle-trail path {
+  fill: none; stroke: rgba(255, 255, 255, .85); stroke-width: 2.4px;
+  stroke-dasharray: 9 15; stroke-linecap: round;
+  animation: trailFlow 1.1s linear infinite;
+}
+@keyframes trailFlow { to { stroke-dashoffset: -48; } }
+.prop-shuttle { left: 45%; top: 50%; width: clamp(34px, 3.6vw, 54px); z-index: 5; }
+.prop-lunch { left: 30%; bottom: 15vh; width: clamp(70px, 7vw, 110px); opacity: 0; transition: .6s; z-index: 4; }
 .prop-note {
-  left: 50%; bottom: 52vh; width: clamp(60px, 6vw, 96px); opacity: 0;
+  left: 50%; bottom: 56vh; width: clamp(60px, 6vw, 96px); opacity: 0;
   transition: .7s cubic-bezier(.3, .9, .3, 1); z-index: 5;
 }
 .uniform-card {
@@ -243,10 +252,22 @@ button { font-family: inherit; }
 .scene-school[data-beat="2"] .uniform-card,
 .scene-school[data-beat="3"] .uniform-card,
 .scene-school[data-beat="4"] .uniform-card { opacity: 1; translate: 0 0; }
-.scene-school[data-beat="2"] .prop-shuttle { animation: hit 1.6s ease-in-out infinite; }
-.scene-school[data-beat="3"] .prop-shuttle { opacity: 0; }
-@keyframes hit { 0%, 100% { translate: 0 0; rotate: -8deg; } 50% { translate: -10vw -5vh; rotate: 14deg; } }
-.scene-school[data-beat="3"] .prop-lunch { opacity: 1; bottom: 26vh; }
+.scene-school[data-beat="2"] .prop-shuttle { animation: shuttleFly 1.9s cubic-bezier(.4, 0, .6, 1) infinite; }
+.scene-school[data-beat="3"] .prop-shuttle,
+.scene-school[data-beat="4"] .prop-shuttle { opacity: 0; }
+@keyframes shuttleFly {
+  0% { left: 22%; top: 60%; rotate: -20deg; }
+  50% { left: 50%; top: 36%; rotate: 150deg; }
+  100% { left: 78%; top: 60%; rotate: 330deg; }
+}
+/* 挥拍：手绘线里那只手拿的球拍来回挥 */
+.scene-school[data-beat="2"] .char-svg .held {
+  transform-box: fill-box; transform-origin: 50% 96%;
+  animation: swing 1.9s cubic-bezier(.4, 0, .6, 1) infinite;
+}
+.scene-school[data-beat="2"] .char-r .char-svg .held { animation-delay: -0.95s; }
+@keyframes swing { 0%, 100% { rotate: -18deg; } 45% { rotate: 26deg; } }
+.scene-school[data-beat="3"] .prop-lunch { opacity: 1; bottom: 15vh; }
 .scene-school[data-beat="4"] .prop-note { opacity: 1; animation: noteFly 2.6s ease-in-out infinite; }
 @keyframes noteFly {
   0%, 100% { translate: 0 0; rotate: -7deg; }
@@ -473,15 +494,29 @@ button { font-family: inherit; }
     radial-gradient(700px 460px at 20% 86%, rgba(120, 110, 220, .22), transparent 66%),
     linear-gradient(180deg, #101a3a 0%, #23255a 38%, #4b3468 62%, #6d4059 82%, #2a1c3a 100%);
 }
+/* 远处的山脊 + 脚下的草地，别让长椅悬在半空 */
+.bg-dusk::before {
+  content: ""; position: absolute; left: -12%; right: -12%; bottom: 16vh; height: 22vh;
+  border-radius: 50% 50% 0 0 / 16vh 16vh 0 0;
+  background: linear-gradient(180deg, rgba(58, 44, 96, .75), rgba(38, 28, 72, .9));
+}
+.bg-dusk::after {
+  content: ""; position: absolute; left: -14%; right: -14%; bottom: 0; height: 26vh;
+  border-radius: 50% 50% 0 0 / 11vh 11vh 0 0;
+  background: linear-gradient(180deg, #2b2050 0%, #1c1538 42%, #140f2b 100%);
+  box-shadow: 0 -2px 40px rgba(255, 190, 150, .12);
+}
 .moon-warm {
   background: radial-gradient(circle at 38% 34%, #fff6e2, #ffd9a8 60%, #f2b57e);
   box-shadow: 0 0 70px 24px rgba(255, 200, 160, .38), 0 0 170px 70px rgba(255, 170, 130, .16);
 }
-.prop-bench { left: 50%; translate: -50% 0; bottom: 14vh; width: min(34vw, 440px); z-index: 1; }
+.prop-bench { left: 50%; translate: -50% 0; bottom: 13vh; width: min(30vw, 420px); z-index: 1; }
 .scene-promise .char { bottom: 20vh; width: calc(var(--cw) * .96); z-index: 3; }
-.scene-promise .char-l { left: 25vw; } .scene-promise .char-r { right: 25vw; }
+/* 两个人靠在一起：间距固定，屏幕再宽也不会被拉开 */
+.scene-promise .char-l { left: 50%; right: auto; margin-left: calc(var(--cw) * -1.02); }
+.scene-promise .char-r { left: 50%; right: auto; margin-left: calc(var(--cw) * .06); }
 .egg-heart {
-  position: absolute; left: 50%; top: 27%; translate: -50% 0;
+  position: absolute; left: 50%; top: 31%; translate: -50% 0;
   width: clamp(76px, 8.4vw, 126px); aspect-ratio: 1; z-index: 8;
   border: 3px solid rgba(255, 233, 200, .6); border-radius: 50%; cursor: pointer;
   background: radial-gradient(circle at 36% 30%, #ff9fbb, #e2412f 68%);
@@ -682,8 +717,8 @@ button { font-family: inherit; }
   .scene.scene-wedding[data-beat="3"] .char-r { right: 11vw; }
   .scene.scene-wedding[data-beat="4"] .char-l { left: 17vw; }
   .scene.scene-wedding[data-beat="4"] .char-r { right: 17vw; }
-  .scene.scene-promise .char-l { left: 13vw; }
-  .scene.scene-promise .char-r { right: 13vw; }
+  .scene.scene-promise .char-l { left: 50%; margin-left: calc(var(--cw) * -1.06); }
+  .scene.scene-promise .char-r { left: 50%; margin-left: calc(var(--cw) * .02); }
   .scene.scene-school .char,
   .scene.scene-club .char,
   .scene.scene-stranger .char,
@@ -753,7 +788,10 @@ html.static-shot .scene.active { visibility: visible; }
       <div class="school-door"></div>
     </div>
     <div class="ground"></div>
-    <div class="prop prop-net" data-prop="net"></div>
+    <div class="prop prop-court" data-prop="court"></div>
+    <svg class="shuttle-trail" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M 21 65 Q 50 34 79 65" vector-effect="non-scaling-stroke"/>
+    </svg>
     <div class="prop prop-shuttle" data-prop="shuttle"></div>
     <div class="prop prop-lunch" data-prop="lunch"></div>
     <div class="prop prop-note" data-prop="note"></div>
@@ -913,7 +951,7 @@ html.static-shot .scene.active { visibility: visible; }
       fx: 'sparkle',
       beats: [
         { text: '后来，我们成了同一个欧美社团的社长。' },
-        { text: '你管片单和海报，我管音响和灯。《怪奇物语》，是我们放的第一部剧。' },
+        { text: '你管片单和海报，我管音响和灯。我们放的第一部电影，是《蜘蛛侠：平行宇宙》。' },
         { text: '每次活动散场，我们都会偷偷往对方书包里塞一个小礼物。' }
       ]
     },
@@ -923,7 +961,7 @@ html.static-shot .scene.active { visibility: visible; }
       beats: [
         { text: '毕业那年，你在云南师范大学，我在北京林业大学。' },
         { text: '地图上两千六百公里：北京的风，昆明的花，中间隔着整整一条京广线。' },
-        { text: '你在昆明喂小猫，我在北京遛小狗 —— 你喜欢猫，我喜欢狗，我们各自替对方养着一份喜欢。' },
+        { text: '你喜欢小猫，我喜欢小狗 —— 我们还没养，但已经把名字起好了。' },
         { text: '一句晚安，要翻过两千六百公里，才落进你耳朵里。' },
         { text: '别人说异地恋很难。可我们把它过成了：每一次见面都像初恋，每一次分别都在倒计时。' }
       ]
@@ -950,7 +988,7 @@ html.static-shot .scene.active { visibility: visible; }
     },
     {
       key: 'promise',
-      fx: 'stars',
+      fx: 'hearts',
       beats: [
         { text: '两年，七百三十个日夜。' },
         { text: '我们把鸡毛蒜皮过成了电影，把异地过成了浪漫。' },
@@ -1139,8 +1177,28 @@ html.static-shot .scene.active { visibility: visible; }
       '<path d="M ' + (cx + 15 * s) + ' ' + (cy - 4 * s) + ' l ' + (4 * s) + ' ' + (-5 * s) + '" ' + st + '/>';
   }
 
-  function blush(x1, y1, x2, y2, s) {
+  /* 鸡的眼：手绘稿里是一只方块眼（外框 + 里面的瞳孔） */
+  function chickenEye(kind, x, y, s) {
     s = s || 1;
+    var w = 23 * s, h = 27 * s;
+    if (kind === 'happy') {
+      return '<path d="M ' + R(x - w / 2) + ' ' + y + ' q ' + R(w / 2) + ' ' + R(-h * 0.8) + ' ' + R(w) +
+        ' 0" fill="none" stroke="' + INK + '" stroke-width="' + R(4.4 * s) + '" stroke-linecap="round"/>';
+    }
+    if (kind === 'closed') {
+      return '<path d="M ' + R(x - w / 2) + ' ' + y + ' q ' + R(w / 2) + ' ' + R(h * 0.42) + ' ' + R(w) +
+        ' 0" fill="none" stroke="' + INK + '" stroke-width="' + R(4.2 * s) + '" stroke-linecap="round"/>';
+    }
+    if (kind === 'love') {
+      return heart(x, y - 2 * s, 11 * s, '#e2412f');
+    }
+    return '<rect x="' + R(x - w / 2) + '" y="' + R(y - h / 2) + '" width="' + R(w) + '" height="' + R(h) +
+      '" rx="' + R(7 * s) + '" fill="#fffdf6" stroke="' + INK + '" stroke-width="' + R(4.2 * s) + '"/>' +
+      '<rect x="' + R(x - 4 * s) + '" y="' + R(y - 2 * s) + '" width="' + R(9 * s) + '" height="' + R(11 * s) +
+      '" rx="' + R(3 * s) + '" fill="#33302c"/>';
+  }
+
+  function blush(x1, y1, x2, y2, s) {    s = s || 1;
     return '<g fill="#ffaec4" opacity=".85">' +
       '<ellipse cx="' + x1 + '" cy="' + y1 + '" rx="' + 10 * s + '" ry="' + 6.6 * s + '"/>' +
       '<ellipse cx="' + x2 + '" cy="' + y2 + '" rx="' + 10 * s + '" ry="' + 6.6 * s + '"/></g>';
@@ -1423,27 +1481,28 @@ html.static-shot .scene.active { visibility: visible; }
     var cid = nid('egg');
     var out = [];
 
-    /* 身后的大把羽毛 */
-    var feathers = [
-      ['M 140 128 C 162 154 182 180 200 210', 9.5],
-      ['M 150 142 C 172 172 188 196 202 222', 8.5],
-      ['M 130 148 C 150 180 164 206 174 234', 9],
-      ['M 120 160 C 134 192 142 218 146 244', 8],
-      ['M 158 122 C 182 142 202 164 216 188', 8.5],
-      ['M 110 172 C 118 200 120 222 120 242', 7.5],
-      ['M 164 108 C 188 124 208 142 222 160', 7],
-      ['M 98 182 C 102 206 102 222 100 238', 6.5],
-      ['M 132 116 C 152 140 168 162 180 186', 7]
+    /* 身后一大把羽毛：照手绘稿，从身体后面垂下来、一直拖到脚下 */
+    var back = [
+      ['M 158 104 C 186 128 208 158 222 194', 8.5],
+      ['M 166 120 C 194 148 212 180 224 218', 8],
+      ['M 150 130 C 178 162 196 196 206 236', 9],
+      ['M 140 146 C 166 182 180 216 186 252', 8.5],
+      ['M 170 96 C 198 116 218 140 230 168', 7.5],
+      ['M 130 158 C 150 194 160 226 162 254', 8],
+      ['M 176 88 C 202 102 222 122 232 144', 7],
+      ['M 118 170 C 130 202 134 230 132 252', 7.5],
+      ['M 178 112 C 202 130 220 152 230 176', 6.5],
+      ['M 146 116 C 170 138 188 164 200 192', 7]
     ];
-    out.push('<g class="feathers" fill="none" stroke="' + INK_SOFT + '" stroke-linecap="round" opacity=".92">' +
-      feathers.map(function (f) { return '<path d="' + f[0] + '" stroke-width="' + f[1] + '"/>'; }).join('') +
+    out.push('<g class="feathers" fill="none" stroke="' + INK_SOFT + '" stroke-linecap="round" opacity=".95">' +
+      back.map(function (f) { return '<path d="' + f[0] + '" stroke-width="' + f[1] + '"/>'; }).join('') +
       '</g>');
 
-    /* 冠羽 */
+    /* 冠羽：头顶那一撮翘起来、末端带勾的羽毛 */
     out.push('<g class="crest" fill="none" stroke="' + INK + '" stroke-linecap="round">' +
-      '<path d="M 112 48 C 116 20 140 6 170 4" stroke-width="6.5"/>' +
-      '<path d="M 106 52 C 112 26 136 12 166 8" stroke-width="6"/>' +
-      '<path d="M 118 50 C 126 30 142 20 158 18" stroke-width="5"/>' +
+      '<path d="M 110 42 C 110 14 134 -3 166 1 C 175 2 179 8 176 15" stroke-width="8"/>' +
+      '<path d="M 102 48 C 106 22 130 7 160 7" stroke-width="7"/>' +
+      '<path d="M 116 44 C 124 26 142 15 156 14" stroke-width="5.5"/>' +
       '</g>');
 
     /* 身体 */
@@ -1490,26 +1549,32 @@ html.static-shot .scene.active { visibility: visible; }
         '</g>');
     }
 
-    /* 喙（朝左，和手绘稿一致） */
-    out.push('<g class="beak">' +
-      '<path d="M 64 98 L 24 116 L 64 132 Z" fill="#f4a63c" stroke="#c8801f" stroke-width="3" stroke-linejoin="round"/>' +
-      '<path d="M 30 116 H 64" stroke="#c8801f" stroke-width="2.4"/>' +
-      '<path d="M 44 110 L 52 107" stroke="#ffd79b" stroke-width="2.4" stroke-linecap="round"/>' +
-      '</g>');
-
-    /* 翅膀 */
-    if (outfit === 'none' || outfit === 'striped' || outfit === 'spidey') {
-      out.push('<path class="wing" d="M 76 150 C 92 136 114 138 120 154 C 106 172 84 172 76 150 Z" ' +
-        'fill="#f6f3ea" stroke="' + INK_SOFT + '" stroke-width="3.4" stroke-linejoin="round"/>');
+    /* 压在身体正面的那几根羽毛（手绘稿里下半身是被羽毛盖住的） */
+    if (outfit === 'none') {
+      var front = [
+        ['M 132 156 C 120 186 114 212 114 236', 7],
+        ['M 148 166 C 140 194 136 216 136 234', 6.5],
+        ['M 118 176 C 108 200 104 220 104 236', 6],
+        ['M 162 156 C 158 186 154 208 152 228', 6]
+      ];
+      out.push('<g class="feathers feathers-front" fill="none" stroke="' + INK_SOFT + '" stroke-linecap="round">' +
+        front.map(function (f) { return '<path d="' + f[0] + '" stroke-width="' + f[1] + '"/>'; }).join('') +
+        '</g>');
     }
 
-    /* 五官 / 面具眼睛 */
+    /* 喙：手绘稿里就是一条线的三角，朝左 */
+    out.push('<g class="beak">' +
+      '<path d="M 64 96 L 18 116 L 64 136 Z" fill="#fff8e8" stroke="' + INK + '" stroke-width="4" ' +
+      'stroke-linejoin="round"/>' +
+      '<path d="M 24 116 H 64" stroke="' + INK + '" stroke-width="3" stroke-linecap="round"/>' +
+      '</g>');
+
+    /* 眼睛：一只方块眼 */
     if (outfit === 'spidey') {
       out.push(mouth(mo, 116, 158, 1));
     } else {
-      out.push(eyes(eye, 104, 92, 104, 92, 1.15));
-      out.push(mouth(mo, 100, 128, 0.95));
-      if (o.blush) out.push(blush(76, 120, 132, 120, 1));
+      out.push(chickenEye(eye, 102, 86, 1.05));
+      if (o.blush) out.push(blush(72, 124, 138, 124, .95));
     }
 
     /* 礼帽 */
@@ -1522,7 +1587,7 @@ html.static-shot .scene.active { visibility: visible; }
     }
 
     /* 手 */
-    var a = arms(78, 156, 154, pose, { width: 8 });
+    var a = arms(80, 152, 150, pose, { width: 7 });
     out.push(a.svg);
 
     var hold = o.item;
@@ -1575,19 +1640,64 @@ html.static-shot .scene.active { visibility: visible; }
     /* 小狗：我喜欢 */
     dog: function () {
       return part('0 0 130 120',
-        '<path d="M 32 74 C 14 70 14 50 24 44" fill="none" stroke="#c98a4b" stroke-width="9" stroke-linecap="round"/>' +
-        '<ellipse cx="64" cy="88" rx="32" ry="24" fill="#eac49a" stroke="#b07c42" stroke-width="3.4"/>' +
-        '<ellipse cx="33" cy="62" rx="9.5" ry="23" fill="#c98a4b" stroke="#b07c42" stroke-width="3.2" transform="rotate(-14 33 62)"/>' +
-        '<ellipse cx="95" cy="62" rx="9.5" ry="23" fill="#c98a4b" stroke="#b07c42" stroke-width="3.2" transform="rotate(14 95 62)"/>' +
-        '<circle cx="64" cy="50" r="27" fill="#f4d6b0" stroke="#b07c42" stroke-width="3.4"/>' +
-        '<ellipse cx="64" cy="62" rx="17" ry="13" fill="#fdf1e2"/>' +
-        '<g class="blink"><circle cx="54" cy="45" r="4.6" fill="#3f3122"/><circle cx="74" cy="45" r="4.6" fill="#3f3122"/>' +
-        '<circle cx="55.6" cy="43.4" r="1.6" fill="#fff"/><circle cx="75.6" cy="43.4" r="1.6" fill="#fff"/></g>' +
-        '<ellipse cx="64" cy="58" rx="7" ry="5.4" fill="#4b3a2a"/>' +
-        '<path d="M 64 63 v 4 M 64 67 q -6 6 -11 1 M 64 67 q 6 6 11 1" fill="none" stroke="#4b3a2a" ' +
+        /* 尾巴 */
+        '<path d="M 30 74 C 10 68 8 46 20 38" fill="none" stroke="#d69a5c" stroke-width="10" stroke-linecap="round"/>' +
+        /* 身体 + 前爪 */
+        '<ellipse cx="64" cy="88" rx="31" ry="24" fill="#f0d3ab" stroke="#b07c42" stroke-width="3.4"/>' +
+        '<ellipse cx="50" cy="105" rx="11" ry="7" fill="#fdf1e2" stroke="#b07c42" stroke-width="2.8"/>' +
+        '<ellipse cx="78" cy="105" rx="11" ry="7" fill="#fdf1e2" stroke="#b07c42" stroke-width="2.8"/>' +
+        /* 两只垂下来的长耳朵 */
+        '<ellipse cx="33" cy="60" rx="10.5" ry="26" fill="#c98a4b" stroke="#a8743a" stroke-width="3" ' +
+        'transform="rotate(-9 33 60)"/>' +
+        '<ellipse cx="95" cy="60" rx="10.5" ry="26" fill="#c98a4b" stroke="#a8743a" stroke-width="3" ' +
+        'transform="rotate(9 95 60)"/>' +
+        /* 头 */
+        '<circle cx="64" cy="48" r="28" fill="#f6dcb8" stroke="#b07c42" stroke-width="3.4"/>' +
+        '<path d="M 64 21 C 46 21 37 34 39 48 C 41 61 52 69 64 69 Z" fill="#e6bd8e" opacity=".45"/>' +
+        /* 口鼻 */
+        '<ellipse cx="64" cy="62" rx="17" ry="13" fill="#fdf4e7" stroke="#dcb27c" stroke-width="2.4"/>' +
+        /* 眼睛 */
+        '<g class="blink">' +
+        '<circle cx="53" cy="43" r="5" fill="#3f3122"/><circle cx="75" cy="43" r="5" fill="#3f3122"/>' +
+        '<circle cx="54.8" cy="41.2" r="1.7" fill="#fff"/><circle cx="76.8" cy="41.2" r="1.7" fill="#fff"/></g>' +
+        /* 鼻子 + 嘴 + 舌头 */
+        '<ellipse cx="64" cy="56" rx="7" ry="5.2" fill="#4b3a2a"/>' +
+        '<ellipse cx="61.6" cy="54.2" rx="2.4" ry="1.5" fill="#8a7458"/>' +
+        '<path d="M 64 61 v 4 M 64 65 q -6 6 -10 1 M 64 65 q 6 6 10 1" fill="none" stroke="#4b3a2a" ' +
         'stroke-width="2.4" stroke-linecap="round"/>' +
-        '<path d="M 57 74 q 7 12 14 0 q -7 5 -14 0 z" fill="#ef8b95"/>' +
-        '<path d="M 40 84 q 24 12 48 0" fill="none" stroke="#b07c42" stroke-width="2.6" opacity=".5"/>');
+        '<path d="M 58 70 q 6 11 12 0 z" fill="#ef8b95" stroke="#d2737d" stroke-width="1.6"/>');
+    },
+    /* 羽毛球场：透视场地 + 球网（占满整个地面） */
+    court: function () {
+      var mesh = '', i, y;
+      for (i = 1; i < 23; i++) mesh += '<path d="M ' + R(192 + i * 27.5) + ' 80 V 152"/>';
+      for (y = 90; y < 152; y += 8.5) mesh += '<path d="M 192 ' + R(y) + ' H 810"/>';
+      return part('0 0 1000 300',
+        '<defs><linearGradient id="courtG" x1="0" y1="0" x2="0" y2="1">' +
+        '<stop offset="0" stop-color="#3f8fb8"/><stop offset="1" stop-color="#7fc8e6"/>' +
+        '</linearGradient></defs>' +
+        /* 场地 */
+        '<path d="M 330 30 H 670 L 970 290 H 30 Z" fill="url(#courtG)"/>' +
+        '<g stroke="#ffffff" stroke-width="3.4" fill="none" opacity=".85" stroke-linecap="round">' +
+        '<path d="M 330 30 H 670 L 970 290 H 30 Z"/>' +
+        '<path d="M 244 105 H 756"/>' +
+        '<path d="M 191 150 H 809"/>' +
+        '<path d="M 140 195 H 860"/>' +
+        '<path d="M 500 30 V 290"/>' +
+        '</g>' +
+        /* 球网：两根网柱 + 网面 + 白色网带 */
+        '<g class="court-net">' +
+        '<rect x="184" y="60" width="11" height="106" rx="5" fill="#5d6d7d"/>' +
+        '<rect x="805" y="60" width="11" height="106" rx="5" fill="#5d6d7d"/>' +
+        '<ellipse cx="189.5" cy="60" rx="9" ry="4" fill="#7b8b9b"/>' +
+        '<ellipse cx="810.5" cy="60" rx="9" ry="4" fill="#7b8b9b"/>' +
+        '<rect x="192" y="80" width="616" height="72" fill="rgba(255,255,255,.34)"/>' +
+        '<g stroke="rgba(255,255,255,.72)" stroke-width="1.5">' + mesh + '</g>' +
+        '<rect x="188" y="68" width="624" height="12" rx="6" fill="#f8fbfd" stroke="#c6d0d8" stroke-width="1.6"/>' +
+        '<rect x="192" y="146" width="616" height="7" fill="#eef4f8" opacity=".8"/>' +
+        '</g>' +
+        /* 网在场上的影子 */
+        '<ellipse cx="500" cy="158" rx="300" ry="9" fill="#1c4f6b" opacity=".22"/>');
     },
     /* 羽毛球网柱 */
     net: function () {
@@ -2226,6 +2336,12 @@ html.static-shot .scene.active { visibility: visible; }
   /* ============================================================== 场景控制 */
   function sceneEl(i) { return document.querySelector('.scene[data-scene="' + i + '"]'); }
 
+  /* 最后一屏的信出现时，把飘落的粒子收掉，保证字看得清 */
+  function setCard(show) {
+    document.getElementById('finalCard').classList.toggle('show', !!show);
+    document.body.classList.toggle('card-open', !!show);
+  }
+
   function buildDots() {
     var html = '';
     for (var i = 0; i < total; i++) {
@@ -2270,9 +2386,8 @@ html.static-shot .scene.active { visibility: visible; }
     if (key === 'wedding' && b === 0) setTimeout(function () { Music.fanfare(); }, 600);
     if (key !== 'entry') Music.chime();
     /* 最后一幕的收尾 */
-    var card = document.getElementById('finalCard');
-    card.classList.toggle('show', key === 'wedding' && b >= D.SCENES[i].beats.length);
-    if (card.classList.contains('show')) showDays();
+    setCard(key === 'wedding' && b >= D.SCENES[i].beats.length);
+    if (key === 'wedding' && b >= D.SCENES[i].beats.length) showDays();
     /* 锁一小会儿，防止连点冲太快 */
     locked = true;
     setTimeout(function () { locked = false; }, 260);
@@ -2282,9 +2397,10 @@ html.static-shot .scene.active { visibility: visible; }
     var key = D.SCENES[cur].key;
     var isLast = beat >= D.SCENES[cur].beats.length - 1;
     var cardShown = document.getElementById('finalCard').classList.contains('show');
-    nextHint.classList.toggle('hide', key === 'promise' || cardShown);
-    nextHint.classList.toggle('last', isLast && key !== 'promise');
-    if (key === 'promise') nextHint.textContent = '点一下那颗心 ♥';
+    var needHeart = key === 'promise' && isLast;
+    nextHint.classList.toggle('hide', needHeart || cardShown);
+    nextHint.classList.toggle('last', isLast && !needHeart);
+    if (needHeart) nextHint.textContent = '点一下那颗心 ♥';
     else nextHint.innerHTML = (isLast ? '继续' : '点击继续') + ' <span>›</span>';
   }
 
@@ -2292,7 +2408,8 @@ html.static-shot .scene.active { visibility: visible; }
     if (locked) return;
     var key = D.SCENES[cur].key;
     var only = D.SCENES[cur].only;
-    if (only) return;                       /* 这一幕只认彩蛋 */
+    /* 有彩蛋入口的那一幕：前面几拍照常点，只有最后一拍必须点那个东西 */
+    if (only && beat >= D.SCENES[cur].beats.length - 1) return;
     var card = document.getElementById('finalCard');
     if (key === 'wedding' && card.classList.contains('show')) return;
     if (beat < D.SCENES[cur].beats.length - 1) {
@@ -2306,11 +2423,10 @@ html.static-shot .scene.active { visibility: visible; }
     } else {
       if (key === 'wedding') {
         /* 彩蛋里的最后一屏：信 */
-        card.classList.add('show');
+        setCard(true);
         showDays();
         setCaption('');
         updateHint();
-        nextHint.classList.add('hide');
         return;
       }
       gotoScene(cur + 1, 0);
@@ -2321,7 +2437,7 @@ html.static-shot .scene.active { visibility: visible; }
     if (locked) return;
     var card = document.getElementById('finalCard');
     if (card.classList.contains('show')) {
-      card.classList.remove('show');
+      setCard(false);
       updateHint();
       return;
     }
@@ -2338,7 +2454,8 @@ html.static-shot .scene.active { visibility: visible; }
   function showDays() {
     var start = new Date(D.START + 'T00:00:00');
     var now = new Date();
-    var days = Math.floor((now - start) / 86400000) + 1;
+    /* 满多少天：到二周年当天正好 730，和文案里「七百三十个日夜」对得上 */
+    var days = Math.floor((now - start) / 86400000);
     var el = document.getElementById('daysNum');
     if (el) el.textContent = String(days);
   }
@@ -2429,7 +2546,8 @@ html.static-shot .scene.active { visibility: visible; }
 
   document.getElementById('replay').addEventListener('click', function (e) {
     e.stopPropagation();
-    document.getElementById('finalCard').classList.remove('show');
+    setCard(false);
+    document.getElementById('finalCard').scrollTop = 0;
     gotoScene(0, 0);
   });
 
